@@ -1,10 +1,9 @@
 import React from 'react'
-
+import Headers from './components/Header'
 const App = () => {
   return (
     <>
-     <h1 className='text-3xl text-red-500
-      font-bold'>Good morning</h1> 
+   <Headers/> 
     
     </>
   )
