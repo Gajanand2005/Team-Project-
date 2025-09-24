@@ -2,6 +2,21 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.jpg'
 import Search from '../Search'
+
+import Badge from '@mui/material/Badge';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import { FaLuggageCart } from "react-icons/fa";
+
+const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${(theme.vars ?? theme).palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
+
 const Header = () => {
   return (
     <>
@@ -33,7 +48,22 @@ const Header = () => {
             <div className='col2 w-[45%] '>
               <Search/>
             </div>
-            <div className='col3 w-[30%]'></div>
+            <div className='col3 w-[30%] flex items-center pl-7'>
+                <ul className='flex items-center gap-3'>
+                  <li className='list-none'>
+                    <Link to='/login' className='link transition text-[15px] font-[500]'>Login</Link> | &nbsp;
+                    <Link to='/register' className='link transition text-[15px] font-[500]'>Register</Link>
+
+                  </li>
+                  <li>
+                      <IconButton aria-label="cart">
+                     <StyledBadge badgeContent={4} color="secondary">
+                   <FaLuggageCart />
+                 </StyledBadge>
+                </IconButton>
+                  </li>
+                </ul>
+            </div>
           </div>
         </div>
       </header>
