@@ -24,20 +24,20 @@ const Header = () => {
   return (
     <>
       <header>
-        <div className="top-strip py-2 border-t-[1px] border-gray-300 border-b-[1px] ">
+        <div className="top-strip py-1 sm:py-2 border-t-[1px] border-gray-300 border-b-[1px] ">
           <div className="container">
-            <div className="flex items-center justify-between">
-              <div className="col1 w-[50%]">
-                <p className="text-[12px] font-[500]">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
+              <div className="col1 w-full sm:w-[50%] lg:w-[60%]">
+                <p className="text-[9px] sm:text-[11px] lg:text-[13px] font-[500]">
                   Get up to 50% off new season styles, limited time{" "}
                 </p>
               </div>
-              <div className="flex items-center justify-end col2">
-                <ul className="flex items-center gap-4">
+              <div className="flex items-center justify-center sm:justify-end col2 w-full sm:w-[50%] lg:w-[40%]">
+                <ul className="flex items-center gap-1 sm:gap-3 lg:gap-4">
                   <li className="list-none">
                     <Link
                       to="/help-center"
-                      className="text-[12px] link font-[500] transition"
+                      className="text-[9px] sm:text-[11px] lg:text-[13px] link font-[500] transition"
                     >
                       Help Center
                     </Link>
@@ -45,7 +45,7 @@ const Header = () => {
                   <li className="list-none">
                     <Link
                       to="/order-tracking"
-                      className="text-[12px] link font-[500] transition"
+                      className="text-[9px] sm:text-[11px] lg:text-[13px] link font-[500] transition"
                     >
                       Order Tracking
                     </Link>
@@ -56,28 +56,28 @@ const Header = () => {
           </div>
         </div>
         <div className="header py-3 ">
-          <div className="container flex items-center justify-between gap-3 ">
-            <div className="col1 w-[25%]">
+          <div className="container flex flex-col md:flex-row items-center justify-between gap-3 ">
+            <div className="col1 w-full md:w-[25%]">
               <Link to={"/"}>
                 <img src={logo} alt="Logo" />
               </Link>
             </div>
-            <div className="col2 w-[45%] ">
+            <div className="col2 w-full md:w-[45%] ">
               <Search />
             </div>
-            <div className="col3 w-[30%] flex items-center pl-7">
-              <ul className="flex items-center justify-end gap-3 w-full">
+            <div className="col3 w-full md:w-[30%] flex items-center justify-center md:justify-end pl-0 md:pl-7">
+              <ul className="flex items-center justify-center md:justify-end gap-2 md:gap-3 w-full">
                 <li className="list-none">
                   <Link
                     to="/login"
-                    className="link transition text-[15px] font-[500]"
+                    className="link transition text-[13px] sm:text-[15px] font-[500]"
                   >
                     Login
                   </Link>{" "}
                   | &nbsp;
                   <Link
                     to="/register"
-                    className="link transition text-[15px] font-[500]"
+                    className="link transition text-[13px] sm:text-[15px] font-[500]"
                   >
                     Register
                   </Link>
