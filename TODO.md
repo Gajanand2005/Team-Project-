@@ -1,4 +1,0 @@
-- [x] Delete the client/src/Pages/Blog/ directory
-- [x] Revert App.jsx to remove Blog import and route
-- [x] Revert Blogitem/index.jsx to use <a href={link}> instead of Link
-- [x] Update TODO.md to reflect the removals
