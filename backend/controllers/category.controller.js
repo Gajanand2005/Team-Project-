@@ -294,30 +294,31 @@ export async function deleteCategory(request, response) {
 
 export async function updatedCategory(request, response) {
     console.log(imagesArr);
-    const category = awiat CategoryModel.findByIdAndUpdate(
+
+    const category = await CategoryModel.findByIdAndUpdate(
         request.params.id,
         {
-            name : request.body.name,
-            images : imagesArr.length > 0 ? imagesArr[0] : request.body.images,
-            parentId : request.body.parentId,
-            parentCatName : request.body.parentCatName
+            name: request.body.name,
+            images: imagesArr.length > 0 ? imagesArr[0] : request.body.images,
+            parentId: request.body.parentId,
+            parentCatName: request.body.parentCatName
         },
-        { new : true }
+        { new: true }
     );
 
     if (!category) {
-        return response.status(500).json ({
-            message : "Category cannot be updated!",
-            success : false,
-            error : true
+        return response.status(404).json({
+            message: "Category not found or cannot be updated!",
+            success: false,
+            error: true
         });
     }
 
     imagesArr = [];
 
     response.status(200).json({
-        error : false,
-        success : true,
-        category : category
-    })
+        error: false,
+        success: true,
+        category: category
+    });
 }
