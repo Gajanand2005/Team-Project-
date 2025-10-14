@@ -5,7 +5,7 @@ import HomeSlider from '../../components/HomeSlider'
 import HomeCatSlider from '../../components/HomeCatSlider'
 import { FaShippingFast } from "react-icons/fa";
 import AdsBannerSlider from '../../components/AdsBannerSlider';
-import AdsBannerSliderV2 from '../../components/AdsBannerSliderV2';
+
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -35,6 +35,7 @@ const Home = () => {
       <section className='py-6'>
         <div className='container flex gap-5'>
           <div className=' part1 w-[70%]'>
+            
             </div>
             <div className='part2 w-[70%] flex items-center gap-5 justify-between flex-col'>
               <BannerBox info="left" img={'https://demos.codezeel.com/prestashop/PRS21/PRS210502/img/cms/sub-banner-1.jpg'} link={"/"} />
@@ -99,7 +100,6 @@ const Home = () => {
         </div>
        
 
-<AdsBannerSliderV2 items={4}/>
         
 
         </div>
