@@ -39,6 +39,8 @@ const BlogList = () => {
           title={blog.title}
           excerpt={blog.excerpt}
           link={blog.link}
+
+          
         />
       ))}
     </div>

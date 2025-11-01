@@ -9,6 +9,7 @@ export default defineConfig({
     include: ['react-icons']
   },
   build: {
+     chunkSizeWarningLimit: 1600,
     rollupOptions: {
       external: [],
       output: {

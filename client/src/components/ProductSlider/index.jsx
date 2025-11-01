@@ -4,7 +4,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import { Navigation } from 'swiper/modules';
-import ProductItem from '../Productitem';
+import ProductItem from '../ProductItem';
 const ProductSlider  = (props) => {
   return (
     <section className='productsSlider py-5'>
@@ -12,7 +12,24 @@ const ProductSlider  = (props) => {
               <Swiper
                 slidesPerView={props.items}
                 spaceBetween={10}
-              
+                breakpoints={{
+                  320: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                  },
+                  640: {
+                    slidesPerView: 2,
+                    spaceBetween: 10,
+                  },
+                  1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 10,
+                  },
+                  1280: {
+                    slidesPerView: props.items,
+                    spaceBetween: 10,
+                  },
+                }}
                 modules={[Navigation]}
                 className="mySwiper"
               >

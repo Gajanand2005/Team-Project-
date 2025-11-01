@@ -1,9 +1,6 @@
-import CategoryModel from "../models/category.model.js";
+import CategoryModel from '../models/category.model.js';
 import { v2 as cloudinary } from 'cloudinary';
-import { error } from "console";
-import { NONAME } from "dns";
 import fs from 'fs';
-import { Children } from "react";
 
 cloudinary.config({
     cloud_name: process.env.cloudinary_Config_Cloud_Name,
@@ -12,15 +9,72 @@ cloudinary.config({
     secure: true, 
 });
 
-//image upload
+
+// image upload 
 var imagesArr = [];
+
+// (This code is written from chatgpt due to some error)
+// export async function uploadImages(request, response) {
+//   try {
+//     imagesArr = [];
+
+//     const images = request.files;
+//     if (!images || images.length === 0) {
+//       return response.status(400).json({
+//         message: "No images provided",
+//         error: true,
+//         success: false,
+//       });
+//     }
+
+//     for (let i = 0; i < images.length; i++) {
+//       try {
+//         // Upload to Cloudinary
+//         const result = await cloudinary.uploader.upload(images[i].path, {
+//           use_filename: true,
+//           unique_filename: false,
+//           overwrite: false,
+//         });
+
+//         // Push Cloudinary image URL
+//         if (result && result.secure_url) {
+//           imagesArr.push(result.secure_url);
+//         } else {
+//           console.error("Upload failed: no secure_url", result);
+//         }
+
+//         // Delete from local uploads folder
+//         fs.unlinkSync(images[i].path);
+//       } catch (err) {
+//         console.error(`Failed to upload ${images[i].filename}:`, err);
+//       }
+//     }
+
+//     return response.status(200).json({
+//       images: imagesArr,
+//       success: true,
+//       error: false,
+//     });
+
+//   } catch (error) {
+//     console.error("Upload error:", error);
+//     return response.status(500).json({
+//       message: error.message || "Image upload failed",
+//       error: true,
+//       success: false,
+//     });
+//   }
+// }
+
+
+
+
+// This code is from youtube
 export async function uploadImages(request, response) {
     try {
         imagesArr = [];
 
-        //const userId = request.userId; // auth middleware
         const image = request.files;
-
         const options = {
             use_filename: true,
             unique_filename: false,
@@ -29,24 +83,26 @@ export async function uploadImages(request, response) {
 
         for (let i = 0; i < image?.length; i++) {
 
-            const img = await cloudinary.uploader.upload(
-                image[i].path,
+            const result = await cloudinary.uploader.upload(
+                image[i].path, 
                 options,
                 function (error, result) {
+                    // imagesArr.push(result.secure_url);
 
-                    imagesArr.push(result.secure_url);
+                     // Push Cloudinary image URL
+                    if (result && result.secure_url) {
+                       imagesArr.push(result.secure_url);
+                    } else {
+                      console.error("Upload failed: no secure_url", result);
+                    }
+                     // Delete from local uploads folder
                     fs.unlinkSync(`uploads/${request.files[i].filename}`);
-                    console.log(request.files[i].filename)
                 }
             );
         }
 
-        // user.avatar = imagesArr[0];
-        // await user.save();
-
         return response.status(200).json({
-            _id: userId,
-            images: imagesArr[0]
+            images: imagesArr
         });
 
     } catch (error) {
@@ -59,10 +115,16 @@ export async function uploadImages(request, response) {
 }
 
 
-//create category
+
+
+
+
+
+
+// create category
 export async function createCategory(request, response) {
     try {
-        let category = new Category ({
+        let category = new CategoryModel ({
             name : request.body.name,
             images : imagesArr,
             parentId : request.body.parentId,
@@ -77,7 +139,7 @@ export async function createCategory(request, response) {
         })
     }
 
-    category =  await category.save();
+    category =  await category.save(); 
 
     imagesArr = [];
 
@@ -97,25 +159,25 @@ export async function createCategory(request, response) {
     }
 }
 
-//get category 
+//get categories 
 export async function getCategories(request, response) {
     try {
         const categories = await CategoryModel.find();
-        const CategoryMap = {};
+        const categoryMap = {};
 
         categories.forEach(cat => {
-            CategoryMap[cat._id] = { ...cat._doc, Children : [] };
+            categoryMap[cat._id] = { ...cat._doc, children : [] };
         });
 
         const rootCategories = [];
 
         categories.forEach(cat => {
             if (cat.parentId) {
-                CategoryMap[cat.parentId].children.push(CategoryMap[cat._id]);
+                categoryMap[cat.parentId].children.push(categoryMap[cat._id]);
             } else {
-                rootCategories.push(caytegoryMap[cat._id]);
+                rootCategories.push(categoryMap[cat._id]);
             }
-        })
+        });
 
         return response.status(200).json({
             error: false,
@@ -136,14 +198,14 @@ export async function getCategories(request, response) {
 //get category count
 export async function getCategoriesCount(request, response) {
     try {
-        const categoryCount = await Category.countDocuments({parentId:undefined});
+        const categoryCount = await CategoryModel.countDocuments({parentId:undefined});
         if (!categoryCount) {
             response.status(500).json({ success : false, error: true });
         }
         else {
             response.send({
                 categoryCount : categoryCount,
-            })
+            });
         }
     } catch (error) {
         return response.status(500).json({
@@ -155,22 +217,22 @@ export async function getCategoriesCount(request, response) {
 }
 
 //get subcategory count
-export async function geSubCategoriesCount(request, response) {
+export async function getSubCategoriesCount(request, response) {
     try {
         const categories = await CategoryModel.find();
         if (!categories) {
             response.status(500).json({ success : false, error: true });
         }
         else {
-            const subCatlist = [];
+            const subCatList = [];
             for (let cat of categories) {
                 if (cat.parentId!==undefined){
-                    subCatlist.push(cat);
+                    subCatList.push(cat);
             }
         }
 
         response.send({
-            subCategoryCount : subCatlist.length,
+            subCategoryCount : subCatList.length,
         });
 
     }  
@@ -185,9 +247,9 @@ export async function geSubCategoriesCount(request, response) {
 }
 
 //get single category
-export async function geSubCategoriesCount(request, response) {
+export async function getCategory(request, response) {
     try {
-        const category = await Category.findById(request.params.id);
+        const category = await CategoryModel.findById(request.params.id);
 
         if (!category) {
             response.status(500)
@@ -217,6 +279,7 @@ export async function geSubCategoriesCount(request, response) {
 }
 
 
+// Delete images
 export async function removeImageFromCloudinary(request, response) {
     const imgUrl = request.query.img;
 
@@ -239,6 +302,8 @@ export async function removeImageFromCloudinary(request, response) {
     }
 }
 
+
+// Delete category
 export async function deleteCategory(request, response) {
     const category = await CategoryModel.findById(request.params.id);
     const images = category.images;
@@ -254,11 +319,9 @@ export async function deleteCategory(request, response) {
             cloudinary.uploader.destroy(imageName, (error, result) => {
             //console.log (error, result);
         });
-        }
-        
+        }  
     }
     
-
     const subCategory = await CategoryModel.find({
         parentId : request.params.id
     });
@@ -266,14 +329,14 @@ export async function deleteCategory(request, response) {
     for (let i = 0; i < subCategory.length; i++) {
         console.log(subCategory[i]._id);
 
-        const thirdSubCategory = await Category.find({
+        const thirdSubCategory = await CategoryModel.find({
             parentId : subCategory[i]._id
         });
 
         for (let i = 0; i < thirdSubCategory.length; i++) {
-            const deletedThirdSubCat = await category.findByIdAndDelete(thirdSubCategory[i]._id);
+            const deletedThirdSubCat = await CategoryModel.findByIdAndDelete(thirdSubCategory[i]._id);
         }
-        const deletedSubCat = await Category.findByIdAndDelete(subCategory[i]._id);
+        const deletedSubCat = await CategoryModel.findByIdAndDelete(subCategory[i]._id);
     }
 
     const deletedCat = await CategoryModel.findByIdAndDelete(request.params.id);
@@ -292,8 +355,10 @@ export async function deleteCategory(request, response) {
     })
 }
 
+
+// Update category
 export async function updatedCategory(request, response) {
-    console.log(imagesArr);
+    // console.log(imagesArr);
 
     const category = await CategoryModel.findByIdAndUpdate(
         request.params.id,

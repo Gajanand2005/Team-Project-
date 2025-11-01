@@ -107,7 +107,7 @@ export async function verifyEmailController(request, response) {
             await user.save();
             return response.status(200).json({ error: false, success: true, message: "Email verified successfully" });
         } else if (!isCodeValid) {
-            return response.status(400), json({ error: true, success: false, message: "Invalid OTP" });
+            return response.status(400).json({ error: true, success: false, message: "Invalid OTP" });
         } else {
             return response.status(400).json({ error: true, success: false, message: "OTP Expired" });
         }
@@ -117,7 +117,7 @@ export async function verifyEmailController(request, response) {
         return response.status(500).json({
             message: error.message || error,
             error: true,
-            success: true
+            success: false
         })
     }
 }
