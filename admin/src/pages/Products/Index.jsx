@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
-import { FaPlus } from "react-icons/fa6";
+import { Button } from '@mui/material'
+import React, { useState, useMemo, useContext } from 'react'
+import { MdOutlineAddAlarm } from "react-icons/md";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,24 +9,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import TooltipMUI from "@mui/material/Tooltip";
+import { PiExportBold } from "react-icons/pi";
+import { FaPlus } from "react-icons/fa6";
 import Checkbox from "@mui/material/Checkbox";
-import DashboardBoxes from "../../Components/DashboardBoxes";
-import dashboard from "../../assets/dashboard.webp";
 import ProgressBar from "../../Components/ProgressBar";
+import SearchBox from '../../Components/SearchBox/Index';
+import { MyContext } from '../../App';
+import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import { AiTwotoneDelete } from "react-icons/ai";
-import TooltipMUI from "@mui/material/Tooltip";
-import { IconButton } from "@mui/material";
-import { Collapse, Box, Typography } from "@mui/material";
-import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { PiExportBold } from "react-icons/pi";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Area } from 'recharts';
-import Badge from '../../Components/Badge/Index.jsx';
-
-
 
 const columns = [
   { id: "id", label: "ID", minWidth: 50 },
@@ -115,7 +109,7 @@ const orderColumns = [
   { id: "date", label: "Ordered date", minWidth: 150 },
 ];
 
-const Dashboard = () => {
+const Product = () => {
     const [isOpenOrderProduct, setIsOpenOrderProduct]= useState(null);
   
   const isShowOrderdProduct =(index)=>{
@@ -276,36 +270,39 @@ const Dashboard = () => {
 
   const handleChangecatFilter = (event) => {
     setcategoryFilterValue(event.target.value);
-  };
+  }
+
+
+  const context =useContext(MyContext);
 
   return (
     <>
-      <div className="w-full py-2 px-5 border border-[rgba(0,0,0,0.1)] rounded-md bg-white flex items-center justify-between mb-6 gap-8">
-        <div className="info">
-          <h1 className="text-[30px] font-[600] leading-18">
-            Good Morning, <br />S-Mal Couture <span>👋</span>
-          </h1>
-          <p className="leading-10">
-            Here's what's happening on your store today. See the statistics at once.
-          </p>
-          <Button className="btn-blue !capitalize mt-4 flex items-center gap-2" variant="contained">
-            <FaPlus /> Add Product
-          </Button>
-        </div>
-        <img src={dashboard} className="w-[250px]" alt="Dashboard" />
-      </div>
+    
 
-      <DashboardBoxes />
-
-      <div className="card my-5 shadow-md sm:rounded-lg bg-white">
+     <div className="card my-5 shadow-md sm:rounded-lg bg-white">
         <div className="px-4 py-5 sm:px-6 flex items-center justify-between">
           <h2 className="text-[18px] font-[600]">Products</h2>
+          <div className="col w-[15%] ml-auto flex items-center gap-2">
+            <TooltipMUI title="Export" placement="top">
+              <Button className="!w-[35px] !h-[35px] btn btn-sm flex items-center !rounded-full !text-black !hover:bg-black-300 hover:scale-105">
+                <PiExportBold />
+              </Button>
+            </TooltipMUI>
+            <TooltipMUI title="Add Product" placement="top">
+              <Button className="!w-[35px] !h-[35px] btn btn-sm flex items-center !rounded-full !text-black hover:bg-black-300 hover:scale-105" onClick={()=>context.setIsOpenFullScreenPanel({
+                open: true,
+                 model: 'Add Product',
+              })}>
+                <span className="text-[18px]"><FaPlus /></span>
+              </Button>
+            </TooltipMUI>
+          </div>
         </div>
-
-        <div className="flex items-center w-full pl-5 justify-between pr-5">
+          
+        <div className="flex items-center w-full px-5 justify-between pr-5">
           <div className="col w-[25%]">
             <h4 className="font-[600] text-[13px] pl-3"> Category by </h4>
-
+            
             <Select
               className="w-full"
               size="small"
@@ -336,18 +333,11 @@ const Dashboard = () => {
             </Select>
           </div>
           <br />
-          <div className="col w-[15%] ml-auto flex items-center gap-2">
-            <TooltipMUI title="Export" placement="top">
-              <Button className="!w-[35px] !h-[35px] btn btn-sm flex items-center !rounded-full !text-black !hover:bg-black-300 hover:scale-105">
-                <PiExportBold />
-              </Button>
-            </TooltipMUI>
-            <TooltipMUI title="Add Product" placement="top">
-              <Button className="!w-[35px] !h-[35px] btn btn-sm flex items-center !rounded-full !text-black hover:bg-black-300 hover:scale-105">
-                <span className="text-[18px]"><FaPlus /></span>
-              </Button>
-            </TooltipMUI>
-          </div>
+
+           <div className="col w-[25%] ml-auto">
+            <SearchBox/>
+           </div>
+          
         </div>
 
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -405,195 +395,9 @@ const Dashboard = () => {
         </Paper>
       </div>
 
-      <div className="card my-5 shadow-md sm:rounded-lg bg-white">
-        <div className="px-4 py-5 sm:px-6 flex items-center justify-between">
-          <h2 className="text-[18px] font-[600]">Recent Orders</h2>
-        </div>
-          <div className="col2 w-full">
-           <div className="shadow-md rounded-md  bg-white">
-              <div className="py-2 px-3 border-b border-[rgba(0,0,0,0.1)]">
-                <h2 className="text-[18px] font-[600]">My Order</h2>
-                <p className="!mt-0">
-                  There are
-                  <span className="font-bold text-orange-600 ">2</span> Order
-                </p>
-                  <div className="relative overflow-x-auto !mt-5">
-                <table className="w-full text-sm text-left rtl:text-right text-black ">
-                  <thead className="text-xs text-black uppercase  ">
-                    <tr>
-                       <th scope="col" className="px-6 py-3">
-                        &nbsp;
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                        Order Id
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Payment Id
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Name
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Number
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Address
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       PinCode
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Total
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Email
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       User Id
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Order Status
-                      </th>
-                       <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Date
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
-                      <td className="px-6 py-4">
-                        <Button className='!w-[35px] !h-[35px] !min-w-[35px] !rounded-full !bg-[#f1f1f1]' onClick={()=>isShowOrderdProduct(0)} >
-                          {
-                            isOpenOrderProduct === 0 ? <FaAngleUp className='text-[18px] text-[#000]' /> : <FaAngleDown className='text-[18px] text-[#000]' />
-                          }
-                         </Button>
-                      </td>
-                      <td className="px-6 py-4">123456</td>
-                      <td className="px-6 py-4">4564tyut56</td>
-                      <td className="px-6 py-4">Gagan</td>
-                      <td className="px-6 py-4">4564564564</td>
-                      <td className="px-6 py-4 "><span className='block w-[300px]'>MOnn H.NO 29 outside the earth</span> </td>
-                      <td className="px-6 py-4">12345</td>
-                      <td className="px-6 py-4">1200</td>
-                      <td className="px-6 py-4">Gagan@gmail.com</td>
-                      <td className="px-6 py-4">12345646</td>
-                      <td className="px-6 py-4"><Badge status="delivered" /></td>
-                      <td className="px-6 py-4 whitespace-nowrap">12-2-2025</td>
-                    </tr>
-                    {
-                      isOpenOrderProduct=== 0 && (
-                        <tr>
-                      <td className='bg-[#f1f1f1] pl-20' colSpan={6}>
-                        <div className='relative overflow-x-auto'>
-                        <table className="w-full text-sm text-left rtl:text-right text-black ">
-                  <thead className="text-xs text-black uppercase  ">
-                    <tr>
-                     
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                        Product Id
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Product Title 
-                       </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Image
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Qty
-                      </th>
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Price
-                      </th>
-                     
-                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                       Sub total 
-                      </th>
-                     </tr>
-                     
-                  </thead>
-                  <tbody>
-                    <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
-                      
-                      <td className="px-6 py-4">123456</td>
-                      <td className="px-6 py-4 whitespace-nowrap">A -lien color Blue shari for ladiys this is cool</td>
-                      <td className="px-6 py-4">
-                        <img src="https://demos.codezeel.com/prestashop/PRS21/PRS210502/90-home_default/hummingbird-cushion.jpg" alt="" className='w-[40px] h-[40px] object-cover rounded-md'/>
-                      </td>
-                      <td className="px-6 py-4">2</td>
-                      <td className="px-6 py-4 ">1200 </td>
-                      <td className="px-6 py-4">1200</td>
-                     
-                    </tr>
 
-                    <tr>
-                      <td className='bg-[#f1f1f1]' colSpan={6}>
-                        
-                      </td>
-                    </tr>
-                    
-                  </tbody>
-              
-                  
-                </table>
-                </div>
-                      </td>
-                    </tr>
-                      )
-                    }
-                    
-                    
-                  </tbody>
-                </table>
-             
-              </div>
-              </div>
-            </div>
-           
-            
-        </div>
-        
-      </div>
-
-      <div className="card my-5 shadow-md sm:rounded-lg bg-white">
-
-        <div className="px-4 py-5 sm:px-6 flex items-center justify-between pb-0">
-          <h2 className="text-[18px] font-[600]">Total Users and Total Sales</h2>
-        </div>
-
-        <div className="px-4 py-5 sm:px-6 flex items-center gap-5 ">
-          <span className="flex items-center gap-1 text-[15px]">
-            <span className="block w-[8px] h-[8px] rounded-full bg-green-600"></span>
-            Total Users
-          </span>
-
-          <span className="flex items-center gap-1 text-[15px]">
-            <span className="block w-[8px] h-[8px] rounded-full bg-blue-600"></span>
-            Total Sales
-          </span>
-        </div>
-
-        <LineChart
-          style={{ width: '100%', maxWidth: '900px', height: '100%', maxHeight: '200vh', aspectRatio: 1.618 }}
-          responsive
-          data={chart1Data}
-          margin={{
-            top: 5,
-            right: 0,
-            left: 20,
-            bottom: 10,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke='none' />
-          <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-          <YAxis width="auto" tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="Total_Sales" stroke="#0045d0ff" strokeWidth={3} activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="Total_Users" stroke="#00b309ff" strokeWidth={3} />
-        </LineChart>
-      </div>
     </>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Product

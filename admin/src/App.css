@@ -1,0 +1,49 @@
+body{
+     font-family: "Roboto", sans-serif;
+     background: #f1f1f1;
+}
+
+.MuiBadge-badge{
+    background-color: #fc3617ea !important;
+}
+
+.ReactCollapse--collapse {
+  transition: height 400ms;
+}
+
+.btn{
+  padding: 8px 20px !important;
+}
+.btn svg{
+  font-size: 20px;
+}
+.btn-blue{
+  background: #3872fa !important;
+  color: #fff !important;
+  padding: 8px 20px !important;
+}
+.btn-sm{
+  padding: 6px 20px !important;
+  font-size: 13px !important;
+}
+
+.btn-blue:hover{
+  background: rgb(22, 74, 195) !important;
+}
+
+.MuiAppBar-colorPrimary{
+  background-color:  #e6e6e6 !important;
+  color: black !important;
+}
+
+.otpBox input{
+    border: 1px solid rgba(0, 0, 0,0.3) !important;
+    outline: none !important;
+}
+.otpBox input:focus{
+    border: 1px solid rgba(0, 0, 0,0.7) !important;
+}
+.otpPage .container{
+    height: 90vh;
+    display: flex;
+}

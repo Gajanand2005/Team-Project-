@@ -1,70 +1,73 @@
 import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
-import { HiGiftTop } from "react-icons/hi2";
-import { IoStatsChart } from "react-icons/io5";
-import { FcDoughnutChart } from "react-icons/fc";
-import { GiBanknote } from "react-icons/gi";
-import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
+import { AiTwotoneGift } from "react-icons/ai";
+import { IoStatsChartSharp } from "react-icons/io5";
+import { FaChartPie } from "react-icons/fa6";
+import { BsBarChartFill } from "react-icons/bs";
+import { RiBarChartFill } from "react-icons/ri";
+import { HiChartBar } from "react-icons/hi2";
+import { PiPiggyBankDuotone } from "react-icons/pi";
+import { SiPiapro } from "react-icons/si";
 
 const DashboardBoxes = () => {
   return (
     <>
       <Swiper
         slidesPerView={4}
-        spaceBetween={10}
-        pagination={{
-          clickable: true,
-        }}
+        spaceBetween={30}
         navigation={true}
         modules={[Navigation]}
-        className="dashboardBoxesSlider"
+        className="dashboardboxslider"
       >
         <SwiperSlide>
-        <div className="box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border-1 border-[rgba(0,0,0,0.2)] flex items-center gap-4">
-        <HiGiftTop className="text-[40px] text-[#3872fa]" />
-        <div className="info w-[70%] ">
-            <h3>New Orders</h3>
-            <b>$1,390</b>
-        </div>
-        <IoStatsChart className="text-[50px] text-[#3872fa]" />
-        </div>
+          <div className="box p-5 cursor-pointer hover:bg-[#f1f1f2] shadow-inner rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4 bg-white">
+            <AiTwotoneGift className="text-[40px] text-[#ff0000]" />
+            <div className="info w-[70%]">
+              <h3>New Orders</h3>
+              <span className="text-[23px]"><b>1,398</b></span>
+            </div>
+            <IoStatsChartSharp className="text-[40px] text-[#ff0000]" />
+          </div>
         </SwiperSlide>
+
         <SwiperSlide>
-        <div className="box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border-1 border-[rgba(0,0,0,0.2)] flex items-center gap-4">
-        <FcDoughnutChart  className="text-[40px] text-[#10b981]" />
-        <div className="info w-[70%] ">
-            <h3>Sales</h3>
-            <b>$57,890 </b>
-        </div>
-        <IoStatsChart className="text-[50px] text-[#10b981]" />
-        </div>
+          <div className="box p-5 cursor-pointer hover:bg-[#f1f1f2] shadow-inner rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4 bg-white">
+            <FaChartPie className="text-[40px] text-[#0000ff]" />
+            <div className="info w-[70%]">
+              <h3>Sales</h3>
+              <span className="text-[23px]"><b>₹58,384</b></span>
+            </div>
+            <BsBarChartFill className="text-[40px] text-[#0000ff]" />
+          </div>
         </SwiperSlide>
-         <SwiperSlide>
-        <div className="box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border-1 border-[rgba(0,0,0,0.2)] flex items-center gap-4">
-        <GiBanknote  className="text-[50px] text-[#7928ca]" />
-        <div className="info w-[70%] ">
-            <h3>Revenue</h3>
-            <b>$12,390</b>
-        </div>
-        <IoStatsChart className="text-[50px] text-[#7928ca]" />
-        </div>
+
+        <SwiperSlide>
+          <div className="box p-5 cursor-pointer hover:bg-[#f1f1f2] shadow-inner rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4 bg-white">
+            <PiPiggyBankDuotone className="text-[55px] text-[#00ff00]" />
+            <div className="info w-[70%]">
+              <h3>Revenue</h3>
+              <span className="text-[23px]"><b>₹12,209</b></span>
+            </div>
+            <RiBarChartFill className="text-[40px] text-[#00ff00]" />
+          </div>
         </SwiperSlide>
-         <SwiperSlide>
-        <div className="box p-5 cursor-pointer hover:bg-[#f1f1f1] rounded-md border-1 border-[rgba(0,0,0,0.2)] flex items-center gap-4">
-        <MdOutlineProductionQuantityLimits className="text-[40px] text-[#3872fa]" />
-        <div className="info w-[70%] ">
-            <h3>Total Products</h3>
-            <b>1,390</b>
-        </div>
-        <IoStatsChart className="text-[50px] text-[#3872fa]" />
-        </div>
+
+        <SwiperSlide>
+          <div className="box p-5 cursor-pointer hover:bg-[#f1f1f2] shadow-inner rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4 bg-white">
+            <SiPiapro className="text-[40px] text-[#bf00ff]" />
+            <div className="info w-[70%]">
+              <h3>Products</h3>
+              <span className="text-[23px]"><b>540</b></span>
+            </div>
+            <HiChartBar className="text-[40px] text-[#bf00ff]" />
+          </div>
         </SwiperSlide>
       </Swiper>
     </>
   );
-};
+}
 
 export default DashboardBoxes;
