@@ -6,8 +6,11 @@ import { TbEyeglassOff } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { MyContext } from "../../App";
+import CircularProgress from '@mui/material/CircularProgress';
+import { postData } from "../../utils/api";
 
 const Login = () => {
+  const [isLoading,setIsLoading]=useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [formFields, setFormFields]= useState({
     email : '',
@@ -19,10 +22,56 @@ const Login = () => {
 
   const forgotPassword = ()=>{
    
-      context.openAlertBox('Success',"OTP Send",{autoClose: 6000, duration: 5000});
-      histoty("/verify");
-  
-    
+      
+      if(formFields,email===""){
+        context.alertBox("error", "Please enter email id");
+        return false;
+      }
+      else{
+        context.alertBox("Success", 'OTP send to {formFields.email}');
+        localStorage.setItem("userEmail", formFields.email);
+        localStorage.setItem("actionType", 'forgot-password');
+
+        postData("api/user/forgot-password",{
+          email:formFields.email,
+        }).then((res)=>{
+          if(res?.error===false){
+            context.alertBox("success",res?.message);
+            history("/verify");
+          }else{
+            context.alertBox("error",res?.message);
+          }
+        })
+      }
+   
+  }
+
+  const validValue=Object.values(formFields).every(el=>el)
+
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    if(formFields===""){
+      context.alertBox("error","Please enter email id");
+      return false
+    }
+
+    if(formFields.email.password===""){
+      context.alertBox("error","Please enter password");
+      return false
+    }
+
+    postData("/api/user/login",formFields,{withCredentials:true}).then((res)=>{
+      console.log(res)
+
+      if(res?.error!==true){
+        setIsLoading(false);
+        context.alertBox("success",res?.message);
+      }
+    })
+
   }
 
   return (
