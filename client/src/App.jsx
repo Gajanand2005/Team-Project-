@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -26,6 +26,8 @@ import MyList from "./Pages/MyList/index.jsx";
 import Order from "./Pages/Orders/index.jsx";
 import Whataap from "./components/Whataap/index.jsx";
 import BlogList from "./components/BlogList/index.jsx";
+import { fetchDataFromApi } from "./utils/api.js";
+
 
 
 
@@ -35,8 +37,9 @@ function App()  {
   const [openProductDetailsModal, setOpenProductDetailsModel] = useState(false);
   const [maxWidth, setMaxWidth] = useState("lg");
   const [fullWidth, setFullWidth] = useState(true);
-  const [openCartPanel, setOpenCartPanel] =useState(false)
+  const [openCartPanel, setOpenCartPanel] =useState(false);
   const [isLogin, setIsLogin]= useState(false);
+  const [userData, setUserData] = useState(null);
   // const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleCloseProductDetailsModal = () => {
@@ -45,7 +48,24 @@ function App()  {
 
   const toggleCartPanel = (newOpen)=>()=>{
     setOpenCartPanel(newOpen);
-  }
+  };
+
+  
+  useEffect(()=>{
+
+    const token = localStorage.getItem('accessToken')
+    if(token!==undefined && token!==null && token!==""){
+       setIsLogin(true);
+
+       fetchDataFromApi(`/api/user/user-details?token=${token}`).then((res)=>{
+        // console.log(res);
+        setUserData(res.data);
+       })
+    }else{
+      setIsLogin(false);
+    }
+  },[isLogin])
+
 
   const alertBox = (type, msg)=>{
     if(type==="success"){
@@ -64,7 +84,9 @@ function App()  {
     openCartPanel,
     isLogin,
     setIsLogin,
-    alertBox
+    alertBox,
+    setUserData,
+    userData
   };
 
   return ( 

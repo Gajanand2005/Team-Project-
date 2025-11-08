@@ -14,54 +14,33 @@ const Verify = () => {
     const handleOtpChange = (value) =>{
         setOtp(value);
     };
-}
+
 
 const history = useNavigate();
 const context = useContext(MyContext);
 
-
-
   const verifyOTP = async (e)=>{
         e.preventDefault();
-        const actionType=localStorage.getItem("actionType");
-
-        if (actionType!=="forgot-password"){
-          postData("api/user/verifyEmail",{
-            email:localStorage.getItem("userEmail"),
-            opt:opt
-          }).then((res)=>{
-            if(res?.error===false){
-              context.alertBox("success",res?.message);
-              localStorage.removeItem("userEmail")
-              history("/login")
-            }else{
-              context.alertBox("error",res?.message);
-            }
-          })
-        }else{
-          postData("api/user/verify-forgot-password-otp",{
-            email:localStorage.getItem("userEmail"),
-            opt:opt
-          }).then((res)=>{
-            if(res?.error===false){
-              context.alertBox("success",res?.message);
-              localStorage.removeItem("userEmail")
-              history("/forgot-password")
-            }else{
-              context.alertBox("error",res?.message);
-            }
-          })
-
+        try {
+          const res = await postData("/api/user/verifyEmail", {
+            email: localStorage.getItem("userEmail"),
+            otp: otp,
+          });
+          console.log("Response:", res);
+          alert(res.message);
+          if(res?.error === false) {
+            context.alertBox("success", res?.message);
+            localStorage.removeItem("userEmail")
+            history("/login")
+          }else{
+            context.alertBox("error", res?.message);
+          }
+        } catch (error) {
+          console.error("Error verifying OTP:", error);
+          alert("Verification failed!");
         }
-  const onChangeInput=(e)=>{
-    const{name,value}=e.target;
-    setFormFileds(()=>{
-      return{
-        ...formFileds,
-        [name]:value
-      }
-    })
-  }
+      };
+    
 
    return (
     <>
