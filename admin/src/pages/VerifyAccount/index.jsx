@@ -7,13 +7,59 @@ import logo from '../../assets/logo.png'
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import OtpBox from "../../Components/OtpBox";
+import {MyContext} from "../../App";
 
-const VerifyAccount = () => {
+const Verify =()=>{
+  const [otp,setOtp]=useState("");
+  const handleOtpChange=(value)=>{
+    setOtp(value);
+  };
+}
+const history = useNavigate();
+const context = context(context);
 
-  const [otp, setOtp]= useState('');
-      const handleOtpChange = (value) =>{
-          setOtp(value);
-      };
+ const verifyOTP = async (e)=>{
+        e.preventDefault();
+        const actionType=localStorage.getItem("actionType");
+
+        if (actionType!=="forgot-password"){
+          postData("api/user/verifyEmail",{
+            email:localStorage.getItem("userEmail"),
+            opt:opt
+          }).then((res)=>{
+            if(res?.error===false){
+              context.alertBox("success",res?.message);
+              localStorage.removeItem("userEmail")
+              history("/login")
+            }else{
+              context.alertBox("error",res?.message);
+            }
+          })
+        }else{
+          postData("api/user/verify-forgot-password-otp",{
+            email:localStorage.getItem("userEmail"),
+            opt:opt
+          }).then((res)=>{
+            if(res?.error===false){
+              context.alertBox("success",res?.message);
+              localStorage.removeItem("userEmail")
+              history("/forgot-password")
+            }else{
+              context.alertBox("error",res?.message);
+            }
+          })
+
+        }
+  const onChangeInput=(e)=>{
+    const{name,value}=e.target;
+    setFormFileds(()=>{
+      return{
+        ...formFileds,
+        [name]:value
+      }
+    })
+  }
+
 
 
   return (

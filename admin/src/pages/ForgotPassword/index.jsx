@@ -5,10 +5,73 @@ import { FaRegUser } from "react-icons/fa";
 import loginbg from "../../assets/Login.jpg"
 import logo from '../../assets/logo.png'
 import Button from "@mui/material/Button";
+import CircularProgress from '@mui/material/CircularProgress';
+import {postData} from "../../utils/api"
+import { useState } from "react";
 
-const ForgotPassword = () => {
+const ForgotPassword = () => {      // 
+  const [isPasswordShow,setIsPasswordShow]=useState(false);
+  const [isShowPassword2, setIsShowPassword] = useState(false);
+  const[isLoading,setIsLoading]=useState(false);
 
+  const [formFields, setFormFields]= useState({
+    email:localStorage.getItem("userEmail"),
+    newPassword:'',
+    confirmPassword:''
+  });
 
+  const context = context(context);
+  const history = useNavigate();
+
+  const onChangeInput=(e)=>{
+    const{name,value}=e.target;
+    setFormFields(()=>{
+      return{
+        ...formFields,
+        [name]:value
+      }
+    })
+  }
+
+  const validValue=Object.values(formFields).every(el=>el)
+
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    if(formFields.newPassword===""){
+      context.alertBox("error","Please enter new password");
+      return false
+    }
+
+    if(formFields.confirmPassword===""){
+      context.alertBox("error","Please enter confirm password");
+      return false
+    }
+
+    if(formFields.confirmPassword!== formFields.newPassword){
+      context.alertBox("error","password and confirm password not matched");
+      return false
+    }
+
+    postData("/api/user/reset-password",formFields).then((res)=>{
+      console.log(res)
+      if(res?.error!==true){
+        localStorage.removeItem("userEmail")
+        localStorage.removeItem("actionType")
+        context.alertBox("success","res?.message");
+        setIsLoading(false);
+        history("/login")
+      }
+      else{
+        context.alertBox("error","res?.message");
+      }
+
+    })
+  }
+
+  
   return (
     <section className="w-full h-[auto] ">
       <img src={loginbg} className="w-full fixed top-0 left-0 opacity-25"/>
