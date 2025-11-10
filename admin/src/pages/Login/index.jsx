@@ -14,16 +14,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-  const[isLoading,setIsLoading]=useState(false);
-  const [isPasswordShow,setIsPasswordShow]=useState(false);
-  const[formFields,setFormFields]=useState({
-    email:'',
-    password:''
-  });
-
-  const context=useContext(MyContext);
-  const history=useNavigate();
-
+  
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingFacebook, setLoadingFacebook] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,43 +25,7 @@ const Login = () => {
     setLoadingFacebook(true);
   }
 
-  const forgotPassword = ()=>{
-   
-      
-      if(formFields,email===""){
-        context.alertBox("error", "Please enter email id");
-        return false;
-      }
-      else{
-        context.alertBox("Success", 'OTP send to {formFields.email}');
-        localStorage.setItem("userEmail", formFields.email);
-        localStorage.setItem("actionType", 'forgot-password');
-
-        postData("api/user/forgot-password",{
-          email:formFields.email,
-        }).then((res)=>{
-          if(res?.error===false){
-            context.alertBox("success",res?.message);
-            history("/verify");
-          }else{
-            context.alertBox("error",res?.message);
-          }
-        })
-      }
-   
-  }
-
-  const onChangeInput=(e)=>{
-    const{name,value}=e.target;
-    setFormFields(()=>{
-      return{
-        ...formFields,
-        [name]:value
-      }
-    })
-  }
-
-
+ 
   return (
     <section className="w-full h-[auto] ">
       <img src={loginbg} className="w-full fixed top-0 left-0 opacity-25"/>
