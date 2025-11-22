@@ -18,3 +18,9 @@
   margin-right: 0 !important;
   
 }
+.HomeCatSlider .swiper-slide {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.HomeCatSlider .swiper-slide-active {
+  transform: scale(1.05);
+}

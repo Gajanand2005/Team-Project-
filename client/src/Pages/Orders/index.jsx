@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import AccountSidebar from '../../components/AccountSidebar';
+import AccountSidebar from '../../components/AccountSidebar/Index';
 import Button from '@mui/material/Button';
 import { FaAngleDown } from "react-icons/fa6";
-import Badge from '../../components/Badge';
+import Badge from '../../components/Badge/Index';
 import { FaAngleUp } from "react-icons/fa6";
 
 const Order = () => {

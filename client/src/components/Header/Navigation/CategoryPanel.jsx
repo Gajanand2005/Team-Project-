@@ -6,7 +6,7 @@ import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import { IoMdClose } from "react-icons/io";
 
-import CategoryCollapse from '../../CategoryCollapse'
+import CategoryCollapse from '../../CategoryCollapse/Index'
 
 const CategoryPanel = (props) => {
 
@@ -24,7 +24,10 @@ const CategoryPanel = (props) => {
           className='cursor-pointer text-[20px]' 
         />
       </h3>
-      <CategoryCollapse/>
+      {
+        props?.data?.length!==0 &&   <CategoryCollapse data={props?.data}/>
+      }
+    
       <Divider />
     </Box>
   );

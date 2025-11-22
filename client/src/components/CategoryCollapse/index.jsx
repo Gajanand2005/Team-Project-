@@ -1,9 +1,13 @@
-import React , { useState } from 'react'
+import React , { Children, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import { FaRegPlusSquare } from "react-icons/fa";
 import { FaRegSquareMinus } from "react-icons/fa6";
-const CategoryCollapse = () => {
+
+
+
+
+const CategoryCollapse = (props) => {
     const [submenuIndex, setSubmenuIndex] = useState(null);
     const [innerSubmenuIndex, setInnerSubmenuIndex] = useState(null);
 
@@ -18,213 +22,77 @@ const CategoryCollapse = () => {
     <>
     <div className='scroll'>
         <ul className='w-full'>
-          <li className='list-none relative flex-col'>
+          {
+            props?.data?.length!==0 &&  props?.data?.map((cat, index)=>{
+              return(
+                <li className='list-none relative flex-col' key={index}>
             <Link to='/' className='w-full'>
-              <Button className='w-full !text-left !justify-start !px-3 !text-black'>Fashine</Button>
+              <Button className='w-full !text-left !justify-start !px-3 !text-black'>{cat?.name}</Button>
             </Link>
-            {submenuIndex === 0 ? (
+            {submenuIndex === index ? (
              <FaRegSquareMinus
              className="absolute top-[10px] right-[15px] cursor-pointer"
-            onClick={() => openSubmenu(0)}
+            onClick={() => openSubmenu(index)}
            />
             ) : (
           <FaRegPlusSquare
           className="absolute top-[10px] right-[15px] cursor-pointer"
-         onClick={() => openSubmenu(0)}
+         onClick={() => openSubmenu(index)}
          />
            )}
-            {submenuIndex === 0 && (
+            {submenuIndex === index && (
               <li className='list-none relative mb-1'>
                 <ul className='submenu  pl-3'>
-                  <li className='list-none relative mb-1'>
+                  {
+                    cat?.children?.length!==0 && cat?.children?.map((subCat, index_)=>{
+                      return(
+                          <li className='list-none relative mb-1' key={index_}>
                     <Link to='/'>
-                      <Button className='w-full !text-left !justify-start !px-3 !text-black'>Apparel</Button>
+                      <Button className='w-full !text-left !justify-start !px-3 !text-black'>{subCat?.name}</Button>
                     </Link>
-                    {innerSubmenuIndex === 0 ? (
+                    {innerSubmenuIndex === index_ ? (
                     <FaRegSquareMinus
-                     className="absolute top-[10px] right-[15px] cursor-pointer" onClick={() => openInnerSubmenu(0)}
+                     className="absolute top-[10px] right-[15px] cursor-pointer" onClick={() => openInnerSubmenu(index_)}
                     />
                   ) : (
               <FaRegPlusSquare
               className="absolute top-[10px] right-[15px] cursor-pointer"
-              onClick={() => openInnerSubmenu(0)}
+              onClick={() => openInnerSubmenu(index_)}
            />
            )}
            {
-            innerSubmenuIndex === 0 && (
+            innerSubmenuIndex === index_ && (
                       <ul className='inner_submenu  w-full !pl-3 !px-3'>
-                        <li className='list-none relative mb-1'>
+                        {
+                          subCat?.children?.length !==0 &&  subCat?.children?.map((thirdLavelCat, index__)=>{
+                            return(
+                              <li className='list-none relative mb-1' key={index__}>
                           <Link to='/' className='link w-full !text-left !justify-start transition text-[13px]'>
-                           Organza
+                           {thirdLavelCat?.name}
                           </Link>
                         </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[13px]'>
-                            Georgette
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                           Silk
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Banarsi
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Cotton
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Chinnon
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Woollen
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Lucknowi
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Crepe
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Net
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[14px]'>
-                            Chiffon
-                          </Link>
-                        </li>
-                      </ul>
-                    )}
-                  </li>
-                </ul>
-              </li>
-            )}
-          </li>
-        </ul>
-        <ul className='w-full'>
-          <li className='list-none relative flex-col'>
-            <Link to='/' className='w-full'>
-              <Button className='w-full !text-left !justify-start !px-3 !text-black'>Electronic</Button>
-            </Link>
-            {submenuIndex === 1 ? (
-             <FaRegSquareMinus
-             className="absolute top-[10px] right-[15px] cursor-pointer flex-col"
-            onClick={() => openSubmenu(1)}
-           />
-            ) : (
-          <FaRegPlusSquare
-          className="absolute top-[10px] right-[15px] cursor-pointer"
-         onClick={() => openSubmenu(1)}
-         />
-           )}
-            {submenuIndex === 1 && (
-              <li className='list-none relative mb-1'>
-                <ul className='submenu w-full pl-3'>
-                  <li className='list-none relative mb-1'>
-                    <Link to='/'>
-                      <Button className='w-full !text-left !justify-start !px-3 !text-black'>Apparel</Button>
-                    </Link>
-                    {innerSubmenuIndex === 1 ? (
-                    <FaRegSquareMinus
-                     className="absolute top-[10px] right-[15px] cursor-pointer" onClick={() => openInnerSubmenu(0)}
-                    />
-                  ) : (
-              <FaRegPlusSquare
-              className="absolute top-[10px] right-[15px] cursor-pointer"
-              onClick={() => openInnerSubmenu(1)}
-           />
-           )}
-           {
-            innerSubmenuIndex === 1 && (
-                      <ul className='inner_submenu  w-full !pl-3 !px-3'>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[13px]'>
-                            Mobile
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[13px]'>
-                           Laptops
-                           </Link>
-                        </li>
+                            )
+                          })
+                        }
                         
+                       
                       </ul>
                     )}
                   </li>
+                      )
+                    })
+                  }
+                
                 </ul>
               </li>
             )}
           </li>
-          <li className='list-none relative flex-col'>
-            <Link to='/' className='w-full'>
-              <Button className='w-full !text-left !justify-start !px-3 !text-black'>Bags</Button>
-            </Link>
-            {submenuIndex === 2 ? (
-             <FaRegSquareMinus
-             className="absolute top-[10px] right-[15px] cursor-pointer flex-col"
-            onClick={() => openSubmenu(2)}
-           />
-            ) : (
-          <FaRegPlusSquare
-          className="absolute top-[10px] right-[15px] cursor-pointer"
-         onClick={() => openSubmenu(2)}
-         />
-           )}
-            {submenuIndex === 2 && (
-              <li className='list-none relative mb-1'>
-                <ul className='submenu w-full pl-3'>
-                  <li className='list-none relative mb-1'>
-                    <Link to='/'>
-                      <Button className='w-full !text-left !justify-start !px-3 !text-black'>Apparel</Button>
-                    </Link>
-                    {innerSubmenuIndex === 2 ? (
-                    <FaRegSquareMinus
-                     className="absolute top-[10px] right-[15px] cursor-pointer" onClick={() => openInnerSubmenu(2)}
-                    />
-                  ) : (
-              <FaRegPlusSquare
-              className="absolute top-[10px] right-[15px] cursor-pointer"
-              onClick={() => openInnerSubmenu(2)}
-           />
-           )}
-           {
-            innerSubmenuIndex === 2 && (
-                      <ul className='inner_submenu  w-full !pl-3 !px-3'>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[13px]'>
-                            Men Bages
-                          </Link>
-                        </li>
-                        <li className='list-none relative mb-1'>
-                          <Link to='/' className='link w-full !text-left !justify-start transition text-[13px]'>
-                           Women Bags
-                          </Link>
-                        </li>
-                      
-                      </ul>
-                    )}
-                  </li>
-                </ul>
-              </li>
-            )}
-          </li>
+              )
+            })
+          }
           
         </ul>
+       
       </div> 
     </>
   )

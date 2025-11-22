@@ -1,78 +1,271 @@
-import React, { useState } from 'react'
-import UploadBox from '../../Components/UploadBox/Index'
+import React, { useContext, useState } from "react";
+import UploadBox from "../../Components/UploadBox/Index";
 import { IoClose } from "react-icons/io5";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import { Button } from '@mui/material';
+import { Button } from "@mui/material";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { MyContext } from "../../App";
+import CircularProgress from "@mui/material/CircularProgress";
+import { postData } from "../../../Utlis/Api";
+import { useNavigate } from "react-router-dom";
 
 const AddSubCategory = () => {
-   const [productSubCat, setProductSubCat] = useState("");
+  const [productSubCat, setProductSubCat] = useState("");
+  const [productSubCat2, setProductSubCat2] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
-     const handleChangeProductSubCat = (event) => {
-    setProductSubCat(event.target.value);
+  const [formFields, setFormFields] = useState({
+    name: "",
+    parentCatName: null,
+    parentId: null,
+  });
+  
+
+  const [formFields2, setFormFields2] = useState({
+    name: "",
+    parentCatName: null,
+    parentId: null,
+  });
+      const history=useNavigate();
+
+  const context = useContext(MyContext);
+
+  // ------------------ Sub Category ------------------
+  const onChangeInput = (e) => {
+    const { name, value } = e.target;
+    setFormFields((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleChangeProductSubCat = (event) => {
+    const selectedId = event.target.value;
+    setProductSubCat(selectedId);
+
+    const selectedCat = context.catData.find((item) => item._id === selectedId);
+    if (selectedCat) {
+      setFormFields((prev) => ({
+        ...prev,
+        parentId: selectedId,
+        parentCatName: selectedCat.name,
+      }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    if (formFields.name === "") {
+      context.alertBox("error", "please enter category name ");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!formFields.parentId) {
+      context.alertBox("error", "please select parent category  ");
+      setIsLoading(false);
+      return;
+    }
+
+    postData("/api/category/create", formFields).then((res) => {
+      setIsLoading(false);
+      context.setIsOpenFullScreenPanel({
+        open: false,
+      });
+    });
+  };
+
+  // ------------------ Third Level Category ------------------
+  const onChangeInput2 = (e) => {
+    const { name, value } = e.target;
+    setFormFields2((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleChangeProductSubCat2 = (event) => {
+    const selectedId = event.target.value;
+    setProductSubCat2(selectedId);
+
+    // find parent sub-category from context
+    let selectedSubCat = null;
+    context.catData.forEach((mainCat) => {
+      mainCat?.children?.forEach((child) => {
+        if (child._id === selectedId) {
+          selectedSubCat = child;
+        }
+      });
+    });
+
+    if (selectedSubCat) {
+      setFormFields2((prev) => ({
+        ...prev,
+        parentId: selectedId,
+        parentCatName: selectedSubCat.name,
+      }));
+    }
+  };
+
+  const handleSubmit2 = (e) => {
+    e.preventDefault();
+    setIsLoading2(true);
+
+    if (formFields2.name === "") {
+      context.alertBox("error", "please enter category name ");
+      setIsLoading2(false);
+      return;
+    }
+
+    if (!formFields2.parentId) {
+      context.alertBox("error", "please select parent category  ");
+      setIsLoading2(false);
+      return;
+    }
+
+    postData("/api/category/create", formFields2).then((res) => {
+      setIsLoading2(false);
+      if (context.setIsOpenFullScreenPanel) {
+        context.setIsOpenFullScreenPanel({
+          open: false,
+        });
+      }
+      history("/subCategory/list")
+    });
   };
 
   return (
     <>
-     <section className="p-5 bg-gray-50 mt-3 ">
-        <form className="form py-3 p-8 ">
+      <section className="p-5 bg-gray-50 mt-3 grid grid-cols-1 ">
+        {/* ------------------ Add Sub Category ------------------ */}
+        <form className="form py-3 p-8 " onSubmit={handleSubmit}>
+          <h4 className="text-[20px] font-[600] text-gray-800">
+            Add Sub Category
+          </h4>
           <div className="scroll max-h-72vh] ">
             <div className="grid grid-cols-1 mb-3 ">
-            <div className="col w-[25%]">
-              
-               <div className="col">
-              <h3 className="text-[14px] font-[500] !mb-2">
-                Product Sub Category
-              </h3>
-              <Select
-                labelId="demo-simple-select-label"
-                id="productCatDrop"
-                className="w-full bg-[#fafafa]"
-                size="small"
-                value={productSubCat}
-                label="Category"
-                onChange={handleChangeProductSubCat}
-              >
-                <MenuItem value={10}>Organza</MenuItem>
-                <MenuItem value={20}>Georgette</MenuItem>
-                <MenuItem value={30}>Silk</MenuItem>
-                <MenuItem value={40}>Banarsi</MenuItem>
-                <MenuItem value={50}>Cotton</MenuItem>
-                <MenuItem value={60}>Chinnon</MenuItem>
-                <MenuItem value={70}>Woollen</MenuItem>
-                <MenuItem value={80}>Lucknowi</MenuItem>
-                <MenuItem value={90}>Crepe</MenuItem>
-                <MenuItem value={100}>Net</MenuItem>
-                <MenuItem value={110}>Winter Wear</MenuItem>
-                <MenuItem value={120}>Summer Wear</MenuItem>
-                <MenuItem value={130}>Western Co-ords</MenuItem>
-                <MenuItem value={140}> Ethnic Co-ords</MenuItem>
-              </Select>
+              <div className="col w-[25%]">
+                <div className="col">
+                  <h3 className="text-[14px] font-[500] !mb-2">
+                    Product Sub Category
+                  </h3>
+                  <Select
+                    id="productCatDrop"
+                    className="w-full bg-[#fafafa]"
+                    size="small"
+                    value={productSubCat}
+                    label="Category"
+                    onChange={handleChangeProductSubCat}
+                  >
+                    {context?.catData?.length !== 0 &&
+                      context?.catData?.map((item, index) => (
+                        <MenuItem key={index} value={item._id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </div>
+              </div>
+              <br />
             </div>
-            </div>
-          
-          <br />
-          
-          </div>
             <div className="col">
-              <h3 className="text-[14px] font-[500] !mb-2">Sub Category Name</h3>
+              <h3 className="text-[14px] font-[500] !mb-2">
+                Sub Category Name
+              </h3>
               <input
                 type="text"
-                className="w-[25%] h-[40px] border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-md p-3 text-sm appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:m-0 [-moz-appearance:textfield] bg-[#fafafa]"
+                className="w-[25%] h-[40px] border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-md p-3 text-sm bg-[#fafafa]"
+                name="name"
+                onChange={onChangeInput}
+                value={formFields.name}
               />
             </div>
+          </div>
+          <hr />
+          <br />
+          <Button type="submit" className="btn-blue btn-lg w-[250px] flex gap-4">
+            {isLoading ? (
+              <CircularProgress color="inherit" />
+            ) : (
+              <>
+                <FaCloudUploadAlt className="text-[25px]" />
+                Publish and View
+              </>
+            )}
+          </Button>
+        </form>
+
+        {/* ------------------ Add Third Level Category ------------------ */}
+        <form className="form py-3 p-8 " onSubmit={handleSubmit2}>
+          <div className="scroll max-h-72vh] ">
+            <h4 className="text-[20px] font-[600] text-gray-800">
+              Add Third Level Category
+            </h4>
+            <div className="grid grid-cols-1 mb-3 ">
+              <div className="col w-[25%]">
+                <div className="col">
+                  <h3 className="text-[14px] font-[500] !mb-2">
+                    Product Sub Category
+                  </h3>
+                  <Select
+                    id="productCatDrop2"
+                    className="w-full bg-[#fafafa]"
+                    size="small"
+                    value={productSubCat2}
+                    label="Category"
+                    onChange={handleChangeProductSubCat2}
+                  >
+                    {context?.catData?.length !== 0 &&
+                      context?.catData?.map((item, index) =>
+                        item?.children?.length !== 0
+                          ? item?.children.map((item2, index2) => (
+                              <MenuItem key={index2} value={item2._id}>
+                                {item2.name}
+                              </MenuItem>
+                            ))
+                          : null
+                      )}
+                  </Select>
+                </div>
+              </div>
+
+              <br />
             </div>
-           <hr />
-         <br />
-        <Button type="button"  className="btn-blue btn-lg w-[250px] flex gap-4"><FaCloudUploadAlt className="text-[25px]" />Publish and View</Button>
-
-          </form>
-          </section>
+            <div className="col">
+              <h3 className="text-[14px] font-[500] !mb-2">
+                Third Level Category Name
+              </h3>
+              <input
+                type="text"
+                className="w-[25%] h-[40px] border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-md p-3 text-sm bg-[#fafafa]"
+                name="name"
+                onChange={onChangeInput2}
+                value={formFields2.name}
+              />
+            </div>
+          </div>
+          <hr />
+          <br />
+          <Button type="submit" className="btn-blue btn-lg w-[250px] flex gap-4">
+            {isLoading2 ? (
+              <CircularProgress color="inherit" />
+            ) : (
+              <>
+                <FaCloudUploadAlt className="text-[25px]" />
+                Publish and View
+              </>
+            )}
+          </Button>
+        </form>
+      </section>
     </>
-  )
-}
+  );
+};
 
-export default AddSubCategory
+export default AddSubCategory;

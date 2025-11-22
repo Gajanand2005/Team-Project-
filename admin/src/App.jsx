@@ -1,34 +1,35 @@
-import React from 'react'
+ import React from 'react'
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard from "./Pages/Dashboard";
-import Header from "./Components/Header";
-import Sidebar from "./Components/Sidebar";
+import Dashboard from "./Pages/Dashboard/Index.jsx";
+import Header from "./Components/Header/Index.jsx";
+import Sidebar from "./Components/Sidebar/Index.jsx";
 import { createContext, useState } from "react";
-import Login from "./Pages/Login";
-import SignUp from "./Pages/Signup";
-import Products from "./Pages/Products/Index";
-import AddProduct from './Pages/Products/AddProduct';
-import Dialog from '@mui/material/Dialog';
+import Login from "./pages/Login/index.jsx";
+import SignUp from "./pages/Signup/index.jsx";
+import Products from "./pages/Products/Index.jsx";
 
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { FaDoorClosed } from "react-icons/fa6";
+import toast, {Toaster} from 'react-hot-toast'; 
+
 import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
-import HomeSliderBanners from './Pages/HomeSliderBanners/Index';
-import AddHomeSlide from './Pages/HomeSliderBanners/AddHomeSlide';
-import CategoryList from './Pages/Categegory/Index';
-import AddCategory from './Pages/Categegory/AddCategory';
-import SubCatList from './Pages/Categegory/SubCatList';
-import AddSubCategory from './Pages/Categegory/AddSubCategory';
-import Users from './pages/Users/Index';
-import Orders from './Pages/Orders/Index';
-import ForgotPassword from './pages/ForgotPassword';
-import VerifyAccount from './pages/VerifyAccount';
-import ChangePassword from './pages/ChangePassword';
+
+
+import Users from './pages/Users/Index.jsx';
+import Orders from './pages/Orders/Index.jsx';
+import ForgotPassword from './pages/ForgotPassword/index.jsx';
+import VerifyAccount from './pages/VerifyAccount/index.jsx';
+import ChangePassword from './pages/ChangePassword/index.jsx';
+import { fetchDataFromApi } from '../Utlis/Api.js';
+import { useEffect } from 'react';
+import Profile from './pages/Profile/index.jsx';
+import CategoryList from './pages/Categegory/Index.jsx';
+import SubCatList from './pages/Categegory/SubCatList.jsx';
+import ProductDetails from './pages/Products/productDetails.jsx';
+
+import AddSize from './pages/Products/addSize.jsx';
+import HomeSliderBanner from './pages/HomeSliderBanners/Index.jsx';
+
 
 
 
@@ -37,6 +38,16 @@ import ChangePassword from './pages/ChangePassword';
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const alertBox = (status, msg)=>{
+
+    if(status.toLowerCase()==="success"){
+      toast.success(msg);
+    }
+    if(status.toLowerCase()==="error"){
+      toast.error(msg);
+    }
+
+  }
 
 export const MyContext = createContext();
 
@@ -53,12 +64,19 @@ function createData(
 }
 
 function App() {
-  const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  const [isLogin, setisLogin] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const [userData, setUserData]= useState(null);
+  const [address, setAddress]= useState([]);
+  const [catData, setCatData]= useState([]);
 
   const [isOpenFullScreenPanel, setIsOpenFullScreenPanel] = useState({
     open: false,
-    model : "",
+    id : ""
+  });
+   const [isOpenFullScreenPanel2 , setIsOpenFullScreenPanel2] = useState({
+    open: false,
+    id : ""
   });
   
 
@@ -227,6 +245,8 @@ function App() {
       ),
     },
 
+    
+
     {
       path: "/forgot-password",
       exact: true,
@@ -331,7 +351,7 @@ function App() {
                     : "w-[100%] transition-all"
                 }`}
               >
-                <HomeSliderBanners />
+                <HomeSliderBanner />
               </div>
             </div>
           </section>
@@ -467,20 +487,154 @@ function App() {
       ),
     },
 
+  {
+      path: "/profile",
+      exact: true,
+      element: (
+        <>
+          <section className="main">
+            <Header />
+            <div className="contentMain flex">
+              <div
+                className={`overflow-hidden sidebarWrapper ${
+                  isSidebarOpen === true
+                    ? "w-[23%] transition-all"
+                    : "w-[0%] opacity-0 transition-all"
+                }`}
+              >
+                <Sidebar />
+              </div>
+              <div
+                className={`contentRight py-4 px-5 ${
+                  isSidebarOpen
+                    ? "w-[77%] transition-all"
+                    : "w-[100%] transition-all"
+                }`}
+              >
+                <Profile />
+              </div>
+            </div>
+          </section>
+        </>
+      ),
+    },
+
+ {
+      path: "/product/:id",
+      exact: true,
+      element: (
+        <>
+          <section className="main">
+            <Header />
+            <div className="contentMain flex">
+              <div
+                className={`overflow-hidden sidebarWrapper ${
+                  isSidebarOpen === true
+                    ? "w-[23%] transition-all"
+                    : "w-[0%] opacity-0 transition-all"
+                }`}
+              >
+                <Sidebar />
+              </div>
+              <div
+                className={`contentRight py-4 px-5 ${
+                  isSidebarOpen
+                    ? "w-[77%] transition-all"
+                    : "w-[100%] transition-all"
+                }`}
+              >
+                <ProductDetails />
+              </div>
+            </div>
+          </section>
+        </>
+      ),
+    },
+
+     {
+      path: "/product/addSize",
+      exact: true,
+      element: (
+        <>
+          <section className="main">
+            <Header />
+            <div className="contentMain flex">
+              <div
+                className={`overflow-hidden sidebarWrapper ${
+                  isSidebarOpen === true
+                    ? "w-[23%] transition-all"
+                    : "w-[0%] opacity-0 transition-all"
+                }`}
+              >
+                <Sidebar />
+              </div>
+              <div
+                className={`contentRight py-4 px-5 ${
+                  isSidebarOpen
+                    ? "w-[77%] transition-all"
+                    : "w-[100%] transition-all"
+                }`}
+              >
+                <AddSize />
+              </div>
+            </div>
+          </section>
+        </>
+      ),
+    },
 
   ]);
 
+useEffect(()=>{
+     const token= localStorage.getItem('accessToken');
+     if(token!==undefined && token!==null && token !==""){
+       setIsLogin(true)
+
+       fetchDataFromApi(`/api/user/user-details`).then((res)=>{
+
+           if(res?.success){
+             setUserData(res?.data);
+           } else if(res?.message === "You have not login" || res?.message === "jwt expired" || res?.message === "Invalid token"){
+             localStorage.removeItem('accessToken');
+             localStorage.removeItem('refreshToken');
+             setUserData(null);
+             alertBox("error","Your session is closed please login again")
+             window.location.href="/login";
+           }
+
+       });
+
+     }else{
+       setIsLogin(false)
+       setUserData(null);
+     }
+   },[])// Remove [isLogin] to prevent infinite loop
+
+    useEffect(()=>{
+      fetchDataFromApi("/api/category").then((res)=>{
+        setCatData(res?.data)
+      })
+    }, [])
 
 
   const values = {
     isSidebarOpen,
-    setisSidebarOpen,
+    setIsSidebarOpen,
     isLogin,
-    setisLogin,
+    setIsLogin,
     productRows,
     setProductRows,
     isOpenFullScreenPanel,
     setIsOpenFullScreenPanel,
+   isOpenFullScreenPanel2,
+ setIsOpenFullScreenPanel2,
+    alertBox,
+    setUserData,
+    userData,
+    address,
+    setAddress,
+    setCatData,
+    catData,
   };
 
   return (
@@ -488,54 +642,9 @@ function App() {
       <MyContext.Provider value={values}>
         <RouterProvider router={router} />
 
-       <Dialog
-        fullScreen
-        open={isOpenFullScreenPanel.open}
-        onClose={()=>setIsOpenFullScreenPanel({
-          open: false,
-        })}
-        slots={{
-          transition: Transition,
-        }}
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={()=>setIsOpenFullScreenPanel({
-                open: false,
-              })}
-              aria-label="close"
-            >
-              <FaDoorClosed   />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {isOpenFullScreenPanel ?.model}
-            </Typography>
-         
-          </Toolbar>
-        </AppBar>
-     
-        {
-          isOpenFullScreenPanel ?.model === "Add Product" && <AddProduct/>
-        }
+      
 
-        {
-          isOpenFullScreenPanel ?.model === "Add Home Slide" && <AddHomeSlide/>
-        }
-
-         {
-          isOpenFullScreenPanel ?.model === "Add New Category" && <AddCategory/>
-        }
-
-      {
-          isOpenFullScreenPanel ?.model === "Add New Sub Category" && <AddSubCategory/>
-        }
-
-      </Dialog>
-
-
+        <Toaster/>
 
       </MyContext.Provider>
     </>

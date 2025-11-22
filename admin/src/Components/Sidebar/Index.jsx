@@ -206,6 +206,17 @@ const Sidebar = () => {
                     </Button>
                 
                 </li>
+                
+                <li className="w-full">
+                  <Link to="/product/addSize">
+                    <Button className="w-full !capitalize !items-center !justify-start !text-[14px] !font-[400] !text-[rgba(0,0,0,0.8)] !py-3 !px-4 !pl-10 !rounded-md hover:!bg-[rgba(0,0,0,0.05)] transition-all gap-3">
+                      <PiDiamondLight />
+                      <span>
+                        Product Size
+                      </span>
+                    </Button>
+                  </Link>
+                </li>
               </ul>
             </Collapse>
           </li>

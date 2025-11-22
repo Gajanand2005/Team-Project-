@@ -4,99 +4,43 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Autoplay, Navigation } from "swiper/modules";
 
-const HomeSlider = () => {
+const HomeSlider = (props) => {
   return (
-    <div className="homeSlider">
-      <div className="container">
+    <div className="homeSlider w-full bg-gray-50 py-6">
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6">
         <Swiper
-          spaceBetween={10}
+          modules={[Navigation, Autoplay]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          grabCursor={true}
+          centeredSlides={false}
+          slidesPerView={1}
+          spaceBetween={20}
+
           breakpoints={{
-            320: {
-              spaceBetween: 10,
-            },
             640: {
-              spaceBetween: 10,
-            },
-            1024: {
-              spaceBetween: 10,
+              slidesPerView: 1,
+              spaceBetween: 20,
             },
           }}
-          modules={[Navigation, Autoplay]}
-          autoplay={{ delay: 2500, disableOnInteraction: false }}
           className="sliderHome"
         >
-          <SwiperSlide key="slide-1">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1759938778050_30745.jpg'
-                alt="Banner Slide"
-                className="w-[100%] "
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide key="slide-2">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1759938751802_30744.jpg'
-                alt="Banner Slide"
-                className="w-[100%] "
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide key="slide-3">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1751685130717_NewProject(8).jpg'
-                alt="Banner Slide"
-                className="w-[100%]"
-              />
-            </div>
-          </SwiperSlide>
-           <SwiperSlide key="slide-4">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1748955932914_NewProject(1).jpg'
-                alt="Banner Slide"
-                className="w-[100%]"
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide key="slide-5">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1751685130717_NewProject(8).jpg'
-                alt="Banner Slide"
-                className="w-[100%]"
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide key="slide-6">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1748955932914_NewProject(1).jpg'
-                alt="Banner Slide"
-                className="w-[100%]"
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide key="slide-7">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1751685130717_NewProject(8).jpg'
-                alt="Banner Slide"
-                className="w-[100%]"
-              />
-            </div>
-          </SwiperSlide>
-           <SwiperSlide key="slide-8">
-            <div className="item rounded-[20px] overflow-hidden">
-              <img
-                src='https://serviceapi.spicezgold.com/download/1751685130717_NewProject(8).jpg'
-                alt="Banner Slide"
-                className="w-[100%]"
-              />
-            </div>
-          </SwiperSlide>
+          {
+            props?.data?.data?.length !== 0 && props?.data?.map((item, index) => {
+              return item.images.map((image, imgIndex) => (
+                <SwiperSlide key={`${index}-${imgIndex}`}>
+                  <div className="item rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 ease-in-out">
+                    <img
+                      src={image}
+                      alt={`Banner ${index + 1}`}
+                      className="w-full h-[300px] xs:h-[300px] sm:h-[350px] md:h-[300px] lg:h-[350px] xl:h-[400px] object-cover"
+                    />
+                  </div>
+                </SwiperSlide>
+              ))
+            })
+          }
+
         </Swiper>
       </div>
     </div>

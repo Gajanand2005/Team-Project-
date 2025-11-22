@@ -5,12 +5,9 @@ import { FaRegUser } from "react-icons/fa";
 import loginbg from "../../assets/Login.jpg"
 import logo from '../../assets/logo.png'
 import Button from "@mui/material/Button";
-import CircularProgress from '@mui/material/CircularProgress';
-import {postData} from "../../utils/api"
-import { useState } from "react";
 
-const ForgotPassword = () => {      // 
-  
+const ForgotPassword = () => {
+
 
   return (
     <section className="w-full h-[auto] ">

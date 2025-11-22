@@ -1,66 +1,47 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Navigation, Autoplay } from 'swiper/modules';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation, Autoplay } from "swiper/modules";
 
-// 🖼️ Import images
-import suit from "../../assets/suit.png";
-import bottom from "../../assets/bottom.png";
-import dethnic from "../../assets/co-ord ethnic.jpg";
-import dress from "../../assets/dress.png";
-import kurti from "../../assets/kurti.jpg";
-import skirt from "../../assets/skirt.png";
-import top from "../../assets/top.png";
-import west from "../../assets/west co-ords.jpg";
-import wint from "../../assets/wint.png";
-
-const HomeCatSlider = () => {
+const HomeCatSlider = (props) => {
   return (
-    <div className='HomeCatSlider py-8 pt-4 bg-[#faf7f7]'>
-      <div className='container'>
+    <div className="HomeCatSlider py-10 bg-[#faf7f7]">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8">
         <Swiper
-          slidesPerView={6}
-          spaceBetween={-320}
-          breakpoints={{
-            320: {
-              slidesPerView: 2,
-              spaceBetween: 10,
-            },
-            640: {
-              slidesPerView: 4,
-              spaceBetween: -100,
-            },
-            1024: {
-              slidesPerView: 6,
-              spaceBetween: -320,
-            },
-          }}
           modules={[Navigation, Autoplay]}
           autoplay={{ delay: 2500, disableOnInteraction: false }}
+          loop={true}
+          grabCursor={true}
+          slidesPerView={2}
+          spaceBetween={16}
+          breakpoints={{
+            360: { slidesPerView: 3, spaceBetween: 12 },
+            480: { slidesPerView: 4, spaceBetween: 14 },
+            640: { slidesPerView: 5, spaceBetween: 16 },
+            768: { slidesPerView: 6, spaceBetween: 18 },
+            1024: { slidesPerView: 7, spaceBetween: 20 },
+            1280: { slidesPerView: 8, spaceBetween: 22 },
+            1536: { slidesPerView: 9, spaceBetween: 24 },
+          }}
           className="mySwiper"
         >
-          {[
-            { img: suit, title: "Fashine" },
-            { img: bottom, title: "ELectronics" },
-            { img: dethnic, title: "Bags" },
-            { img: dress, title: "Footwear" },
-            { img: kurti, title: "Groceries" },
-            { img: skirt, title: "Beauty" },
-            { img: top, title: "Wellness" },
-            { img: west, title: "Jewellery" },
-            
-          ].map((item, index) => (
+          {props?.data?.map((cat, index) => (
             <SwiperSlide key={index}>
-              <Link to='/'>
-                <div className='item py-2 px-2 text-center flex flex-col items-center justify-center'>
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    className='w-[95px] h-[95px] rounded-full object-cover border-[2px] border-gray-200 shadow-sm hover:scale-105 transition-transform duration-300'
-                  />
-                  <h3 className='text-[15px] font-[500] mt-3 text-gray-700'>{item.title}</h3>
+              <Link to="/" className="block">
+                <div className="item text-center flex flex-col items-center justify-center">
+                  <div className="relative flex items-center justify-center">
+                    <img
+                      src={cat?.images?.[0]}
+                      alt={cat?.name}
+                      className="w-[80px] h-[80px] xs:w-[90px] xs:h-[90px] sm:w-[100px] sm:h-[100px] md:w-[110px] md:h-[110px] lg:w-[115px] lg:h-[115px] 
+                      rounded-full object-cover border-[3px] border-gray-200 shadow-sm hover:scale-105 hover:shadow-md transition-all duration-300"
+                    />
+                  </div>
+                  <h3 className="text-[13px] sm:text-[14px] md:text-[15px] font-medium mt-3 text-gray-700 whitespace-nowrap">
+                    {cat?.name}
+                  </h3>
                 </div>
               </Link>
             </SwiperSlide>

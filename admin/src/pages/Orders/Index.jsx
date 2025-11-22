@@ -2,6 +2,7 @@ import { Button } from '@mui/material'
 import React, { useState } from 'react'
 import { FaAngleUp, FaAngleDown } from 'react-icons/fa'
 import Badge from '../../Components/Badge/Index.jsx'
+import PrintVoice from '../Invoice/printvoice.jsx'
 
 
 const Orders = () => {
@@ -116,6 +117,9 @@ const Orders = () => {
                       <th scope="col" className="px-6 py-3 whitespace-nowrap">
                        Sub total 
                       </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Print Invoice 
+                      </th>
                      </tr>
                      
                   </thead>
@@ -130,7 +134,7 @@ const Orders = () => {
                       <td className="px-6 py-4">2</td>
                       <td className="px-6 py-4 ">1200 </td>
                       <td className="px-6 py-4">1200</td>
-                     
+                     <td className="px-6 py-4"><PrintVoice/></td>
                     </tr>
 
                     <tr>

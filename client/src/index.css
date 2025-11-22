@@ -23,6 +23,9 @@ body{
 .bg-org{
     background-color: #ff5252;
 }
+.btn-dark{background: #363636 !important; color: #fff !important; border: 1px solid #171717 !important;}
+.btn-dark:hover{background: #171717 !important;}
+
 .link:hover{
     color: #ff5252;
 }
@@ -64,7 +67,7 @@ display:flex ;  justify-content: center; align-items: center; background-color: 
     }
     .homeCatSlider.item{
         border-radius: 1px;
-        solid :rgba(0, 0, 0,0.1);
+        border: 1px solid rgba(0, 0, 0,0.1);
     }
     .homeCatSlider.swiper-button-prev:hover,.homeCatSlider.homeCatSlider.swiper-button-prev:hover{
         background-color: rgba(0, 0, 0,0.1) !important;
@@ -131,6 +134,11 @@ input[type=number]::-webkit-outer-spin-button{
     overflow: hidden !important;
 }
 
+.addressPanel .MuiPaper-root{
+    width: 500px !important;
+    overflow: hidden !important;
+}
+
 #size-menu .MuiButtonBase-root{
     font-size: 12px !important;
 }
@@ -175,4 +183,406 @@ input[type=number]::-webkit-outer-spin-button{
     opacity: 1;
 }
 
-button .MuiCircularProgress-root{width: 30px !important; height: 30px !important;}
+/* Responsive Design Media Queries */
+
+/* Mobile devices (up to 767px) */
+@media (max-width: 767px) {
+    .container {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    body {
+        font-size: 14px;
+    }
+
+    p {
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .swiper-button-prev, .swiper-button-next {
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+    }
+
+    .swiper-button-prev::after, .swiper-button-next::after {
+        font-size: 16px !important;
+    }
+
+    .homeCatSlider .swiper-button-prev, .homeCatSlider .swiper-button-next {
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+    }
+
+    .homeCatSlider .swiper-button-prev::after, .homeCatSlider .swiper-button-next::after {
+        font-size: 12px !important;
+    }
+
+    .productsSlider .swiper-wrapper {
+        padding: 10px;
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+
+    .cartPanel .MuiPaper-root {
+        width: 100% !important;
+        max-width: 400px;
+    }
+
+    .otpPage .container {
+        height: auto;
+        flex-direction: column;
+        padding: 20px 0;
+    }
+
+    #account-menu .MuiPaper-root {
+        width: 150px !important;
+    }
+
+    .zoomProductSliderThumbs {
+        height: 50vh !important;
+    }
+
+    nav ul button {
+        font-size: 12px;
+    }
+
+    .productContent .actions button {
+        min-width: 35px !important;
+        height: 25px !important;
+    }
+
+    .MuiCheckbox-root {
+        padding: 4px !important;
+    }
+
+    .MuiTabs-indicator {
+        height: 2px;
+    }
+
+    .MuiPaginationItem-page {
+        min-width: 30px;
+        height: 30px;
+    }
+
+    /* Navigation responsiveness */
+    nav .container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav .col_1, nav .col_2, nav .col_3 {
+        width: 100% !important;
+        text-align: center;
+    }
+
+    nav .col_2 {
+        order: 1;
+    }
+
+    nav .col_1 {
+        order: 2;
+    }
+
+    nav .col_3 {
+        order: 3;
+    }
+
+    .nav {
+        justify-content: center;
+    }
+
+    .nav li {
+        margin: 0 5px;
+    }
+
+    /* Home page responsiveness */
+    .leftSec {
+        padding: 20px 0 !important;
+        text-align: center;
+    }
+
+    .rightSec {
+        width: 100% !important;
+        margin-top: 20px;
+    }
+
+    .rightSec .MuiTabs-root {
+        justify-content: center;
+    }
+
+    /* Footer responsiveness */
+    .footer-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .footer-flex .grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+    }
+
+    .footer-flex .flex {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    /* Product item responsiveness */
+    .productItem .img {
+        height: 180px !important;
+    }
+
+    .productItem .actions {
+        right: 5px;
+    }
+
+    .productItem .actions button {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+    }
+}
+
+/* Tablet devices (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        width: 90%;
+    }
+
+    .swiper-button-prev, .swiper-button-next {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .swiper-button-prev::after, .swiper-button-next::after {
+        font-size: 18px !important;
+    }
+
+    .homeCatSlider .swiper-button-prev, .homeCatSlider .swiper-button-next {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+    }
+
+    .homeCatSlider .swiper-button-prev::after, .homeCatSlider .swiper-button-next::after {
+        font-size: 14px !important;
+    }
+
+    .productsSlider .swiper-wrapper {
+        padding: 12px;
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+
+    .cartPanel .MuiPaper-root {
+        width: 350px !important;
+    }
+
+    .otpPage .container {
+        height: 80vh;
+    }
+
+    #account-menu .MuiPaper-root {
+        width: 180px !important;
+    }
+
+    .zoomProductSliderThumbs {
+        height: 60vh !important;
+    }
+
+    .productContent .actions button {
+        min-width: 38px !important;
+        height: 28px !important;
+    }
+
+    /* Navigation responsiveness */
+    nav .container {
+        gap: 15px;
+    }
+
+    nav .col_1 {
+        width: 25% !important;
+    }
+
+    nav .col_2 {
+        width: 50% !important;
+    }
+
+    nav .col_3 {
+        width: 25% !important;
+    }
+
+    .nav li {
+        margin: 0 8px;
+    }
+
+    /* Home page responsiveness */
+    .leftSec {
+        padding: 30px !important;
+    }
+
+    .rightSec {
+        width: 60% !important;
+    }
+
+    /* Footer responsiveness */
+    .footer-flex .grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 30px;
+    }
+
+    .footer-flex .flex {
+        justify-content: space-between;
+    }
+
+    /* Product item responsiveness */
+    .productItem .img {
+        height: 220px !important;
+    }
+
+    .productItem .actions button {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+    }
+}
+
+/* Desktop devices (1024px and above) */
+@media (min-width: 1024px) {
+    .container {
+        width: 95%;
+    }
+
+    /* Default styles already cover desktop, but can add larger sizes if needed */
+    .swiper-button-prev, .swiper-button-next {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+    }
+
+    .swiper-button-prev::after, .swiper-button-next::after {
+        font-size: 22px !important;
+    }
+
+    .homeCatSlider .swiper-button-prev, .homeCatSlider .swiper-button-next {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .homeCatSlider .swiper-button-prev::after, .homeCatSlider .swiper-button-next::after {
+        font-size: 16px !important;
+    }
+
+    .zoomProductSliderThumbs {
+        height: 80vh !important;
+    }
+
+    /* Navigation responsiveness */
+    nav .container {
+        gap: 20px;
+    }
+
+    nav .col_1 {
+        width: 20% !important;
+    }
+
+    nav .col_2 {
+        width: 60% !important;
+    }
+
+    nav .col_3 {
+        width: 20% !important;
+    }
+
+    .nav li {
+        margin: 0 10px;
+    }
+
+    /* Home page responsiveness */
+    .leftSec {
+        padding: 40px !important;
+    }
+
+    .rightSec {
+        width: 57% !important;
+    }
+
+    /* Footer responsiveness */
+    .footer-flex .grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    .footer-flex .flex {
+        justify-content: space-between;
+    }
+
+    /* Product item responsiveness */
+    .productItem .img {
+        height: 250px !important;
+    }
+
+    .productItem .actions button {
+        width: 35px !important;
+        height: 35px !important;
+        min-width: 35px !important;
+    }
+}
+
+/* Large desktop devices (1440px and above) */
+@media (min-width: 1440px) {
+    .container {
+        width: 90%;
+        max-width: 1400px;
+    }
+
+    /* Enhanced spacing for larger screens */
+    nav .container {
+        gap: 30px;
+    }
+
+    .leftSec {
+        padding: 50px !important;
+    }
+
+    .rightSec {
+        width: 55% !important;
+    }
+
+    .footer-flex .grid {
+        gap: 40px;
+    }
+}
+
+/* Extra large desktop devices (1920px and above) */
+@media (min-width: 1920px) {
+    .container {
+        width: 85%;
+        max-width: 1600px;
+    }
+
+    .leftSec {
+        padding: 60px !important;
+    }
+
+    .rightSec {
+        width: 50% !important;
+    }
+}
+
+.MuiDialog-paper{
+   width: 700px  !important;
+   max-width: 700px !important;
+}
+.productDetailsModal .MuiDialog-paper{
+   width: 1200px  !important;
+   max-width: 1200px !important;
+}
+.MuiCircularProgress-root{@apply !text-orange-600}
+/* button.btn-org .MuiCircularProgress-root{color: white !important;} */
+

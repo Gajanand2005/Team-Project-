@@ -1,70 +1,73 @@
-import { Link, NavLink } from "react-router-dom";
-import udrcrafts_logo from "../../assets/udrcrafts_logo.jpg"
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import udrcrafts_logo from "../../assets/udrcrafts_logo.jpg";
 import { CgLogIn } from "react-icons/cg";
 import { FaRegUser } from "react-icons/fa";
-import loginbg from "../../assets/Login.jpg"
-import logo from '../../assets/logo.png'
-import { useState } from "react";
+import loginbg from "../../assets/Login.jpg";
+import logo from "../../assets/logo.png";
+import { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import OtpBox from "../../Components/OtpBox";
-import {MyContext} from "../../App";
+import { MyContext } from "../../App";
+import { postData } from "../../../Utlis/Api";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const Verify =()=>{
-  const [otp,setOtp]=useState("");
-  const handleOtpChange=(value)=>{
+
+const VerifyAccount = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+  const handleOtpChange = (value) => {
     setOtp(value);
   };
-}
-const history = useNavigate();
-const context = context(context);
 
- const verifyOTP = async (e)=>{
-        e.preventDefault();
-        const actionType=localStorage.getItem("actionType");
+  const context = useContext(MyContext);
+  const history = useNavigate();
 
-        if (actionType!=="forgot-password"){
-          postData("api/user/verifyEmail",{
-            email:localStorage.getItem("userEmail"),
-            opt:opt
-          }).then((res)=>{
-            if(res?.error===false){
-              context.alertBox("success",res?.message);
-              localStorage.removeItem("userEmail")
-              history("/login")
-            }else{
-              context.alertBox("error",res?.message);
-            }
-          })
-        }else{
-          postData("api/user/verify-forgot-password-otp",{
-            email:localStorage.getItem("userEmail"),
-            opt:opt
-          }).then((res)=>{
-            if(res?.error===false){
-              context.alertBox("success",res?.message);
-              localStorage.removeItem("userEmail")
-              history("/forgot-password")
-            }else{
-              context.alertBox("error",res?.message);
-            }
-          })
+  const verifyOTP = (e) => {
+    e.preventDefault();
 
-        }
-  const onChangeInput=(e)=>{
-    const{name,value}=e.target;
-    setFormFileds(()=>{
-      return{
-        ...formFileds,
-        [name]:value
+    if (otp !== "") {
+      setIsLoading(true);
+      const actionType = localStorage.getItem("actionType");
+
+      if (actionType !== "forgot-password") {
+        postData("/api/user/verifyEmail", {
+          email: localStorage.getItem("userEmail"),
+          otp: otp,
+        }).then((res) => {
+          if (res?.error === false) {
+            context.alertBox("success", res?.message);
+            localStorage.removeItem("userEmail");
+            setIsLoading(false);
+            history("/login");
+          } else {
+            context.alertBox("error", res?.message);
+            setIsLoading(false)
+          }
+        });
+      } else {
+        postData("/api/user/verify-forgot-password-otp", {
+          email: localStorage.getItem("userEmail"),
+          otp: otp,
+        }).then((res) => {
+          if (res?.error === false) {
+            context.alertBox("success", res?.message);
+
+            history("/change-password");
+          } else {
+            context.alertBox("error", res?.message);
+            setIsLoading(false)
+          }
+        });
       }
-    })
-  }
-
-
+    } else {
+      context.alertBox("error", "Please enter OTP");
+    }
+  };
+  
 
   return (
     <section className="w-full h-[auto] ">
-      <img src={loginbg} className="w-full fixed top-0 left-0 opacity-25"/>
+      <img src={loginbg} className="w-full fixed top-0 left-0 opacity-25" />
       <header className="  w-full top-0 left-0 fixed px-4 py-3 flex items-center justify-between z-50 ">
         <Link to="/">
           <img
@@ -74,7 +77,11 @@ const context = context(context);
           />
         </Link>
         <div className="flex items-center gap-4">
-          <NavLink to="/login" exact={true} activeClassName="active bg-[#f1f1f1]">
+          <NavLink
+            to="/login"
+            exact={true}
+            activeClassName="active bg-[#f1f1f1]"
+          >
             <button className="!rounded-full !text-[rgba(0,0,0,0.0.8)] bg-gray-200 !px-5 flex gap-3 items-center hover:bg-[#f1f1f2] h-[20px]">
               <CgLogIn className="text-[18px]" />
               Login
@@ -91,7 +98,7 @@ const context = context(context);
 
       <div className="  loginBox card w-[600px] pb-80 h-[auto] mx-auto pt-20 z-50 relative">
         <div className="text-center">
-          <img src="/verify.png" className="w-[100px] m-auto"/>
+          <img src="/verify.png" className="w-[100px] m-auto" />
         </div>
 
         <div>
@@ -100,19 +107,34 @@ const context = context(context);
           </h1>
 
           <br />
-          <p className="text-center text-[15px]">OTP send to <span className="text-primary font-bold">rinkuv37@gmail.com</span></p>
+          <p className="text-center text-[15px]">
+            OTP send to{" "}
+            <span className="text-primary font-bold">
+              {localStorage.getItem("userEmail")}
+            </span>
+          </p>
           <br />
-
-          <div className="text-center flex items-center justify-center flex-col">
-            <OtpBox length={6} onChange={handleOtpChange}/>
-          </div>
-
-          <br/>
-
-          <div className="w-[300px] m-auto">
-            <Button className="btn-blue w-full">Verify OTP</Button>
-          </div>
-
+          <form onSubmit={verifyOTP}>
+            <div className="text-center flex items-center justify-center flex-col">
+              <OtpBox length={6} onChange={handleOtpChange} />
+            </div>
+            <br />
+            <div className="w-[300px] m-auto">
+              <Button
+                type="submit"
+                className="btn-blue w-full"
+               
+              >
+                {" "}
+                {isLoading === true ? (
+                  <CircularProgress color="inherit" />
+                ) : (
+                  "Verify OTP"
+                )}
+              </Button>
+            </div>
+          </form>
+          <br />
         </div>
       </div>
     </section>

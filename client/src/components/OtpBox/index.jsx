@@ -17,15 +17,11 @@ const OtpBox = ({ length, onChange }) => {
     }
   };
 
-
-  const handleKeyDown = (event, index) => {
-    if (event.key === "Backspace" && !otp[index] && index > 0) {
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       document.getElementById(`otp-input-${index - 1}`).focus();
     }
   };
-
-
-
   return (
     <>
       <div
