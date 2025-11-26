@@ -20,7 +20,7 @@ import Orders from './pages/Orders/Index.jsx';
 import ForgotPassword from './pages/ForgotPassword/index.jsx';
 import VerifyAccount from './pages/VerifyAccount/index.jsx';
 import ChangePassword from './pages/ChangePassword/index.jsx';
-import { fetchDataFromApi } from '../Utlis/Api.js';
+import { fetchDataFromApi } from './Utlis/Api.js';
 import { useEffect } from 'react';
 import Profile from './pages/Profile/index.jsx';
 import CategoryList from './pages/Categegory/Index.jsx';

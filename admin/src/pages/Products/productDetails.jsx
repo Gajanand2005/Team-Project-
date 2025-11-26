@@ -8,7 +8,7 @@ import "swiper/css/pagination";
 import { Navigation, Autoplay } from "swiper/modules";
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { fetchDataFromApi } from '../../../Utlis/Api';
+import { fetchDataFromApi } from '../../Utlis/Api';
 import { MdBrandingWatermark, MdFilterVintage, MdOutlineFilterVintage } from 'react-icons/md';
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { BsPatchCheckFill } from 'react-icons/bs';

@@ -11,7 +11,7 @@ import { IoClose } from "react-icons/io5";
 import { Button } from "@mui/material";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../../App";
-import { deleteImages, editData, fetchDataFromApi, postData } from "../../../Utlis/Api";
+import { deleteImages, editData, fetchDataFromApi, postData } from "../../Utlis/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 

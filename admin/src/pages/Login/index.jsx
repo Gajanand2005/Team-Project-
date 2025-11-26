@@ -14,7 +14,7 @@ import { FaEyeSlash } from "react-icons/fa";
 import { useContext } from "react";
 import { MyContext } from "../../App";
 import CircularProgress from "@mui/material/CircularProgress";
-import { postData, fetchDataFromApi } from "../../../Utlis/Api";
+import { postData, fetchDataFromApi } from "../../Utlis/Api";
 
 
 

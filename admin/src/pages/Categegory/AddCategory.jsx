@@ -5,7 +5,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Button } from "@mui/material";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { deleteImages, postData } from "../../../Utlis/Api";
+import { deleteImages, postData } from "../../Utlis/Api";
 import { MyContext } from "../../App";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";

@@ -21,7 +21,7 @@ import { data, Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import { AiTwotoneDelete } from "react-icons/ai";
-import { deleteData, fetchDataFromApi, deleteWithData } from "../../../Utlis/Api";
+import { deleteData, fetchDataFromApi, deleteWithData } from "../../Utlis/Api";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import CircularProgress from '@mui/material/CircularProgress';

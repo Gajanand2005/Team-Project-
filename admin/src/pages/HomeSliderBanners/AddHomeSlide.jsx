@@ -8,7 +8,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { useState } from 'react';
 import { useContext } from 'react';
 import { MyContext } from '../../App';
-import { deleteImages, postData } from '../../../Utlis/Api';
+import { deleteImages, postData } from '../../Utlis/Api';
 import { useNavigate } from "react-router-dom";
 
 const AddHomeSlide = () => {

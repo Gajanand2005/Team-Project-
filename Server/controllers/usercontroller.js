@@ -805,3 +805,61 @@ export async function getReviews(req, res) {
         })
     }
 }
+
+
+// get all reviews
+export async function getAllReviews(req, res) {
+    try {
+        const reviews = await ReviewModel.find();
+
+        if(!reviews) {
+            return res.status(400).json({
+                error: true,
+                success: false
+            })
+        }
+
+        return res.status(200).json({
+            error: false,
+            success: true,
+            reviews: reviews
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: "Something is wrong",
+            error: true,
+            success: false
+        })
+    }
+}
+
+
+
+// get all users
+export async function getAllUsers(req, res) {
+    try {
+        const users = await UserModel.find();
+
+        if(!users) {
+            return res.status(400).json({
+                error: true,
+                success: false
+            })
+        }
+
+        return res.status(200).json({
+            error: false,
+            success: true,
+            users: users
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something is wrong",
+            error: true,
+            success: false
+        })
+    }
+}
+

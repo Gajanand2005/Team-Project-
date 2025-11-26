@@ -8,7 +8,7 @@ import { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import OtpBox from "../../Components/OtpBox";
 import { MyContext } from "../../App";
-import { postData } from "../../../Utlis/Api";
+import { postData } from "../../Utlis/Api";
 import CircularProgress from "@mui/material/CircularProgress";
 
 

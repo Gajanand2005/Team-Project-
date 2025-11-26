@@ -16,7 +16,7 @@ import { MyContext } from '../../App';
 import { FaEdit } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import { AiTwotoneDelete } from "react-icons/ai";
-import { deleteData, fetchDataFromApi } from '../../../Utlis/Api';
+import { deleteData, fetchDataFromApi } from '../../Utlis/Api';
 
 const columns = [
   { id: "id", label: "ID", minWidth: 50 },

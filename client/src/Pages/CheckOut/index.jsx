@@ -77,7 +77,8 @@ const CheckOut = () => {
   const checkout=(e)=>{
     e.preventDefault();
 
-    var option = {
+    if(userData?.address_details?.length !== 0){
+       var option = {
       key : VITE_APP_RAZORPAY_KEY_ID,
       key_secret: VITE_APP_RAZORPAY_KEY_SECRET,
       amount: parseInt(totalAmount * 100),
@@ -126,46 +127,57 @@ const CheckOut = () => {
       theme: {
         color: "#ff5252",
       },
-    };
+      };
 
-    // console.log(options);
-
-    var pay = new window.Razorpay(option);
-    pay.open();
+   
+       var pay = new window.Razorpay(option);
+       pay.open();
+    }else{
+       context.alertBox("error", "Please add address");
+      }
 
   }
  
+
+
   const cashOnDelivery = () => {
 
     const user = context?.userData
 
-    const payLoad = {
-      userId: user?._id,
-      products: context?.cartData,
-      payment_status: "CASH ON DELIVERY",
-      delivery_address: selectedAddress,
-      totalAmt:totalAmount,
-      date: new Date().toLocaleString("en-Us", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      })
-    };
+      if(userData?.address_details?.length !== 0){
 
+        const payLoad = {
+          userId: user?._id,
+          products: context?.cartData,
+          paymentId: '',
+          payment_status: "CASH ON DELIVERY",
+          delivery_address: selectedAddress,
+          totalAmt:totalAmount,
+          date: new Date().toLocaleString("en-Us", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })
+        };
+    
+    
+        postData('/api/order/create', payLoad).then((res) => {
+          context.alertBox("success", res?.message);
+          if(res?.error == false) {
+            deleteData(`/api/cart/emptyCart/${user?._id}`).then((res) => {
+              context?.getCartItems();
+            })
+           
+          } else {
+            context.alertBox("error", res?.message);
+          }
+          history("/order/success");
+    
+        });
 
-    postData('/api/order/create', payLoad).then((res) => {
-      context.alertBox("success", res?.message);
-      if(res?.error == false) {
-        deleteData(`/api/cart/emptyCart/${user?._id}`).then((res) => {
-          context?.getCartItems();
-        })
-       
-      } else {
-        context.alertBox("error", res?.message);
+      }else{
+        context.alertBox("error", "Please add address");
       }
-      history("/order/success");
-
-    });
 }
 
 
@@ -207,9 +219,9 @@ const CheckOut = () => {
                             <h3 className="text-[20px] font-[600] capitalize">
                               {userData?.name}
                             </h3>
-                            <p className="!mt-0 !mb-0 capitalize">{address?.address_line1 + " " + address?.city + " " +address?.country + " " +address?.state + " " + address?.landmark}</p>
+                            <p className="!mt-0 !mb-0 capitalize">{address?.address_line1 + " " + address?.city + " " +address?.country + " " +address?.state + " " + address?.landmark  + ' '  + address?.mobile}</p>
                             <p className="!mt-0 !mb-0 capitalize font-[600]">
-                              +{userData?.mobile}
+                              {userData?.mobile}
                             </p>
                           </div>
 

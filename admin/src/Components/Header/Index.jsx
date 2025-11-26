@@ -13,7 +13,7 @@ import { IoMdLogOut } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 import { MyContext } from "../../App";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchDataFromApi } from "../../../Utlis/Api";
+import { fetchDataFromApi } from "../../Utlis/Api";
 import AddProduct from "../../pages/Products/AddProduct";
 import AddHomeSlide from "../../pages/HomeSliderBanners/AddHomeSlide";
 import AddCategory from "../../pages/Categegory/AddCategory";

@@ -19,14 +19,22 @@ const [uploading, setUploading] = useState(false);
 
   const context = useContext(MyContext);
 
-  useEffect(()=>{
-    const userAvtar = [];
-    if(context?.userData?.avatar!=="" && context?.userData?.avatar!==undefined){
-        userAvtar.push(context?.userData?.avatar);
-    setPreviews(userAvtar)
-    }
+  // useEffect(()=>{
+  //   const userAvtar = [];
+  //   if(context?.userData?.avatar!=="" && context?.userData?.avatar!==undefined){
+  //       userAvtar.push(context?.userData?.avatar);
+  //   setPreviews(userAvtar)
+  //   }
    
-  })
+  // })
+
+  useEffect(() => {
+    const avatar = context?.userData?.avatar;
+    if (avatar) {
+      setPreviews([avatar]);
+    }
+  }, [context?.userData?.avatar]);
+  
 
 
 let img_arr = [];

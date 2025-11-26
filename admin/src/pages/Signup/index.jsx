@@ -12,7 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { FaEyeSlash } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import CircularProgress from "@mui/material/CircularProgress";
-import { postData } from "../../../Utlis/Api";
+import { postData } from "../../Utlis/Api";
 import { MyContext } from "../../App";
 
 

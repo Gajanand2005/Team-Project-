@@ -6,7 +6,7 @@ import TooltipMUI from "@mui/material/Tooltip";
 import { FaEdit } from "react-icons/fa";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { MyContext } from "../../App";
-import { deleteData, editData, fetchDataFromApi, postData } from "../../../Utlis/Api";
+import { deleteData, editData, fetchDataFromApi, postData } from "../../Utlis/Api";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 

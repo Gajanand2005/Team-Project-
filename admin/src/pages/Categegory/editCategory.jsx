@@ -177,7 +177,7 @@ import {
   deleteImages,
   editData,
   fetchDataFromApi,
-} from "../../../Utlis/Api";
+} from "../../Utlis/Api";
 
 const flattenCategories = (categories = []) => {
   const list = [];
