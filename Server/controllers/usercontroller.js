@@ -863,3 +863,52 @@ export async function getAllUsers(req, res) {
     }
 }
 
+// delete Products
+
+// delete multiple product
+export async function deleteMultiple(req,res){
+    const {ids} = req.body;
+    if(!ids || !Array.isArray(ids)){
+        return res.status(400).json({
+            error:true,
+            success: false,
+            message : "invalid input"
+        });
+    }
+    for(let i=0; i<ids?.length; i++){
+        const product = await ProductModel.findById(ids[i]);
+        const images = user.images;
+        let img ="";
+        for(img of images){
+            const imgUrl = img;
+            const urlArr = imgUrl.split("/")           ;
+            const image = urlArr[urlArr.length - 1];
+
+            const imageName = image.split(".")[0];
+
+            if(imageName){
+                cloudinary.uploader.destroy(imageName,(error,result)=>{
+
+                })
+            }
+
+        }
+    }
+
+    try {
+
+        await UserModel.deleteMany({_id:{$in : ids}});
+        return res.status(200).json({
+            message: "users delete successfully",
+            error: false,
+            success: true
+        })        
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}

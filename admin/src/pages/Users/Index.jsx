@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import React, { useState, useMemo, useContext } from 'react'
+import React, { useState, useMemo, useContext, useEffect} from 'react'
 import { MdOutlineAddAlarm } from "react-icons/md";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -191,6 +191,10 @@ const Users = () => {
   ])
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const [userData,setUserData]=useState([]);
+  const [isLoading, setIsLoading]= useState(false); ///////////
+  
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -250,19 +254,87 @@ const Users = () => {
 
   const context =useContext(MyContext);
 
+  useEffect(()=>{
+    getUsers();
+    setIsLoading(true);
+    fetchDataFromApi('/api/user/getAllUsers').then((res)=>{
+      setUserData(res?.users)
+      setUserTotalData(res?.users)
+      setIsLoading(false)
+    })
+  },[])
+
+  const getUsers=()=>{
+    setIsLoading(true);
+    fetchDataFromApi('/api/user/getAllUsers').then((res)=>{
+      setUserData(res?.users)
+      setUserTotalData(res?.users)
+      setIsLoading(false)
+
+  }
+
+  useEffect(()=>{
+    // Filter orders based on search query
+    if(searchQuery!==""){
+      const filterdItems=userTotalData?filter((user)=>
+        user._id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.mobile!==null && user?.mobile?.includes(searchQuery).
+      );
+      setUserData(filterdItems)
+    }else{
+      fetchDataFromApi('/api/User/getAllUsers').then((res)=>{
+        if(res?error===false){
+          setUserData(res?.Users)
+          setIsLoading(False)
+        }
+
+      })
+    }
+  },[])
+
+  const deleteMultipleProduct = () =>{
+      if(sortedIds.length === 0){
+        context.alertBox('error', 'Please select items to delete');
+        return;
+      }
+  
+      try {
+        deleteWithData(`/api/user/deleteMultiple`, {ids: sortedIds}).then((res)=>{
+          getProducts();
+          context.alertBox("success","User Deleted");
+        })
+      } catch (error) {
+        context.alertBox('error',"error deleting items.");
+      }
+    }
+
   return (
-    <>
+    
     
 
      <div className="card my-5 shadow-md sm:rounded-lg bg-white">
        
           
-        <div className="flex items-center w-full px-5 justify-between pr-5">
-       <div className="px-4 py-5 sm:px-6 flex items-center justify-between">
-          <h2 className="text-[18px] font-[600]">Users</h2>
+          <div className="flex items-center w-full px-5 justify-between pr-5">
+          <div className="px-4 py-5 sm:px-6 flex items-center justify-between">
+          <h2 className="text-[18px] font-[600]">Users List</h2>
           <div className="col w-[15%] ml-auto flex items-center gap-2">
             
-        
+          <div className="col w-[40%]" ml-auto>
+            <SearchBox
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+
+          </div>
+
+          {
+            sortedIfds?.length!==0 && <Button variant="contained">
+              className="btn-sm" size="small" color="error"
+                  onClick={deleteMultiple} Delete </Button>
+          }
           </div>
         </div>
           <br />
@@ -279,7 +351,8 @@ const Users = () => {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox" sx={{ pl: 2 }}>
-                    <Checkbox checked={allPageRowsSelected} onChange={handleSelectAll} color="primary" />
+                    <Checkbox checked={allPageRowsSelected} onChange={handleSelectAll} color="primary" 
+                    checked={userData?.length>0?productData.every ((item)=>item.checked):false}/>
                   </TableCell>
                   {columns.map((column) => (
                     <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }} sx={{ fontWeight: "bold" }}>
@@ -290,6 +363,57 @@ const Users = () => {
               </TableHead>
 
               <TableBody>
+              {
+                isLoading===false ? userData?.length!==0 && userData?.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )?.reverse()? map((user,index)=>{
+                  return(
+                    <TableRow>
+                      <TableCell style={{minwidth:columns.minWidth}}>
+                        <Checkbox {...label} size="small"/>
+                          checked===true?true:false
+                          onChange={(e)=>handleCheckboxChange(e,product._id,index)}
+                      </TableCell>
+
+                       <TableCell style={{minWidth:columns.width}}>
+                          {
+                            user?.verify_email===false?
+                            <span
+                              className={'inline-block py-1 px-4 rounded-full text-[11px] captalize bg-pi-500'}
+                            >
+                              Not verify
+                              :
+                            <span
+                              className={'inline-block py-1 px-4 rounded-full text-[11px] captalize bg-pi-500'}
+                              verfied
+                            ></span> 
+                            </span>
+                           
+                          }
+                       </TableCell>
+                      <TableCell style={{minWidth:columns.width}}>
+                        <div className="flex items-center gap-4 w{70px}">
+                          <div class="img w=[45] h-[45px] rounded-md overflow-hidden group">
+                            <Link to="/product/45745" data-discovered="true">
+                            <img
+                                 src={user?.avatar!=="" && user?.
+                                  avatar!==undefined?user.
+                                  avatar:'/user.jpg'}
+                                            
+                            class="w-full group-hover:scale-105 transistion-all"/>
+                            </Link>
+
+                          </div>
+
+                        </div>
+
+                      </TableCell>
+                    </TableRow>
+                    
+                  )
+                })
+                }
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
@@ -319,7 +443,7 @@ const Users = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={userData?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -329,7 +453,7 @@ const Users = () => {
       </div>
 
 
-    </>
+    
   )
 }
 
