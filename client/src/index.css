@@ -23,9 +23,6 @@ body{
 .bg-org{
     background-color: #ff5252;
 }
-.btn-dark{background: #363636 !important; color: #fff !important; border: 1px solid #171717 !important;}
-.btn-dark:hover{background: #171717 !important;}
-
 .link:hover{
     color: #ff5252;
 }
@@ -585,4 +582,9 @@ input[type=number]::-webkit-outer-spin-button{
 }
 .MuiCircularProgress-root{@apply !text-orange-600}
 /* button.btn-org .MuiCircularProgress-root{color: white !important;} */
+
+.searchBox .MuiCircularProgress-root{
+  width: 20px !important;
+  height:20px !important;
+}
 

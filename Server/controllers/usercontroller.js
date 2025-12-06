@@ -33,7 +33,7 @@ export async function registerUserController(req, res) {
       });
     }
 
-    user = await UserModel.findOne({ email: email });
+    user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') });
 
     if (user) {
       return res.json({
@@ -49,7 +49,7 @@ export async function registerUserController(req, res) {
     const hashPassword = await bcrypt.hash(password, salt);
 
     user = new UserModel({
-      email: email,
+      email: email.toLowerCase(),
       password: hashPassword,
       name: name,
       otp: verifyCode,
@@ -91,7 +91,7 @@ export async function verifyEmailController(req, res) {
     try {
         const { email, otp } = req.body;
 
-        const user = await UserModel.findOne({ email: email });
+        const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') });
         if (!user) {
             return res.status(400).json({ error: true, success: false, message: "User not found" });
         }
@@ -125,12 +125,12 @@ export async function authWithGoogle(req, res) {
     const {name,email,password,avatar,mobile,role}= req.body;
 
     try {
-        const existingUser = await UserModel.findOne({email: email});
+        const existingUser = await UserModel.findOne({email: new RegExp('^' + email.toLowerCase() + '$', 'i')});
         if(!existingUser){
             const userData = {
                 name:name,
                 mobile:mobile,
-                email:email,
+                email:email.toLowerCase(),
                 password: "null",
                 role: role,
                 verify_email: true,
@@ -218,19 +218,29 @@ export async function loginUserController(req, res) {
     try {
         const { email, password } = req.body;
 
-        const user = await UserModel.findOne({ email: email })
+        if (!email || !password) {
+            return res.status(400).json({
+                message: "provide email and password",
+                error: true,
+                success: false,
+            });
+        }
+
+        const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') })
 
         if (!user) {
+            console.log(`Login attempt failed: User not found for email ${email}`);
             return res.status(400).json({
-                message: "User not register",
+                message: "User not registered",
                 error: true,
                 success: false
             })
         }
 
-        if (user.verify_email !== true) {
+        if (user.signUpWithGoogle) {
+            console.log(`Login attempt failed: User signed up with Google, cannot login with password for ${email}`);
             return res.status(400).json({
-                message: "Your Email.is not verify yet please verify your email first",
+                message: "Please login with Google",
                 error: true,
                 success: false
             })
@@ -239,8 +249,9 @@ export async function loginUserController(req, res) {
         const checkPassword = await bcrypt.compare(password, user.password);
 
         if (!checkPassword) {
+            console.log(`Login attempt failed: Incorrect password for user ${email}`);
             return res.status(400).json({
-                message: "Check your password",
+                message: "Incorrect password",
                 error: true,
                 success: false
             })
@@ -437,7 +448,7 @@ export async function updateUserDetails(req, res) {
             {
                 name: name,
                 mobile: mobile,
-                email: email,
+                email: email.toLowerCase(),
                 verify_email: email !== userExist.email ? false : true,
                 password: hashPassword,
                 otp: verifyCode !== "" ? verifyCode : null,
@@ -484,7 +495,7 @@ export async function updateUserDetails(req, res) {
 export async function forgotPasswordController(req, res) {
     try {
         const { email } = req.body
-        const user = await UserModel.findOne({ email: email })
+        const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') })
 
         if (!user) {
             return res.status(400).json({
@@ -538,7 +549,7 @@ export async function verifyForgotPasswordOtp(req, res) {
             });
         }
 
-        const user = await UserModel.findOne({ email: email });
+        const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') });
 
         if (!user) {
             return res.status(400).json({
@@ -568,6 +579,7 @@ export async function verifyForgotPasswordOtp(req, res) {
         // Reset OTP fields after successful verification
         user.otp = "";
         user.otpExpires = "";
+        user.forgotPasswordVerified = true;
 
         await user.save();
 
@@ -599,7 +611,7 @@ export async function resetPassword(req, res) {
       });
     }
 
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') });
     if (!user) {
       return res.status(400).json({
         message: "Email is not available",
@@ -608,30 +620,6 @@ export async function resetPassword(req, res) {
       });
     }
 
-    if (user?.signUpWithGoogle === false) {
-      if (!oldPassword) {
-        return res.status(400).json({
-          error: true,
-          success: false,
-          message: "Provide oldPassword"
-        });
-      }
-      if (!user.password) {
-        return res.status(400).json({
-          message: "No password found for this user.",
-          error: true,
-          success: false
-        });
-      }
-      const checkPassword = await bcrypt.compare(oldPassword, user.password);
-      if (!checkPassword) {
-        return res.status(400).json({
-          message: "Your old password is wrong",
-          error: true,
-          success: false,
-        });
-      }
-    }
 
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
@@ -646,6 +634,7 @@ export async function resetPassword(req, res) {
 
     user.password = hashPassword;
     user.signUpWithGoogle = false;
+    user.forgotPasswordVerified = false;
     await user.save();
 
     return res.json({
@@ -725,7 +714,7 @@ export async function userDetails(req, res) {
     try {
         const userId = req.userId
         console.log(userId)
-        const user = await UserModel.findById(userId).populate('address_details').select('-password -refresh_token')
+        const user = await UserModel.findById(userId).populate('address_details').select('name email mobile avatar role status address_details orderHistory createdAt updatedAt')
 
         // Prevent caching to avoid 304 responses
         res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -779,6 +768,24 @@ export async function addReview(req, res) {
     }
 }
 
+// get all users
+export async function getAllUsers(req, res) {
+    try {
+        const users = await UserModel.find({}).select('name email mobile avatar role status address_details orderHistory createdAt updatedAt');
+        return res.status(200).json({
+            error: false,
+            success: true,
+            data: users
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something is wrong",
+            error: true,
+            success: false
+        });
+    }
+}
+
 // get reviews
 export async function getReviews(req, res) {
     try {
@@ -800,113 +807,6 @@ export async function getReviews(req, res) {
     } catch (error) {
         return res.status(500).json({
             message: "Something is wrong",
-            error: true,
-            success: false
-        })
-    }
-}
-
-
-// get all reviews
-export async function getAllReviews(req, res) {
-    try {
-        const reviews = await ReviewModel.find();
-
-        if(!reviews) {
-            return res.status(400).json({
-                error: true,
-                success: false
-            })
-        }
-
-        return res.status(200).json({
-            error: false,
-            success: true,
-            reviews: reviews
-        })
-
-    } catch (error) {
-        return response.status(500).json({
-            message: "Something is wrong",
-            error: true,
-            success: false
-        })
-    }
-}
-
-
-
-// get all users
-export async function getAllUsers(req, res) {
-    try {
-        const users = await UserModel.find();
-
-        if(!users) {
-            return res.status(400).json({
-                error: true,
-                success: false
-            })
-        }
-
-        return res.status(200).json({
-            error: false,
-            success: true,
-            users: users
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            message: "Something is wrong",
-            error: true,
-            success: false
-        })
-    }
-}
-
-// delete Products
-
-// delete multiple product
-export async function deleteMultiple(req,res){
-    const {ids} = req.body;
-    if(!ids || !Array.isArray(ids)){
-        return res.status(400).json({
-            error:true,
-            success: false,
-            message : "invalid input"
-        });
-    }
-    for(let i=0; i<ids?.length; i++){
-        const product = await ProductModel.findById(ids[i]);
-        const images = user.images;
-        let img ="";
-        for(img of images){
-            const imgUrl = img;
-            const urlArr = imgUrl.split("/")           ;
-            const image = urlArr[urlArr.length - 1];
-
-            const imageName = image.split(".")[0];
-
-            if(imageName){
-                cloudinary.uploader.destroy(imageName,(error,result)=>{
-
-                })
-            }
-
-        }
-    }
-
-    try {
-
-        await UserModel.deleteMany({_id:{$in : ids}});
-        return res.status(200).json({
-            message: "users delete successfully",
-            error: false,
-            success: true
-        })        
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
             error: true,
             success: false
         })

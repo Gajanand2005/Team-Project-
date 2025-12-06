@@ -20,8 +20,8 @@ const userSchema = mongoose.Schema({
         default : ""
     },
     mobile: {
-        type: Number,
-        default: ""
+        type: String,
+        default: null
     },
     verify_email: {
         type: Boolean,
@@ -78,6 +78,10 @@ const userSchema = mongoose.Schema({
         default: "USER"
     },
     signUpWithGoogle:{
+        type:Boolean,
+        default: false
+    },
+    forgotPasswordVerified:{
         type:Boolean,
         default: false
     }

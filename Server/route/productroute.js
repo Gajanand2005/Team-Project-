@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import auth from '../middleware/auth.js';
 import upload from '../middleware/multer.js';
-import {createProduct, getAllProducts, getAllProductsByCatId, uploadImages,getAllProductsByCatName, getAllProductsBySubCatId,getAllProductsBySubCatName,getAllProductsByThirdLavelCatId, getAllProductsByThirdLavelCatName, getAllProductsByPrice, getAllProductsByRating, getAllProductsCount, getAllFeaturedProducts, deleteProduct, getProducts, removeImageFromCloudinary, updateProduct, deleteMultipleProduct, createProductSize, deleteProductSize, updateProductSize, deleteMultipleProductSize, getProductSize, getProductSizeById, filters, sortBy } from '../controllers/productcontroller.js';
+import {createProduct, getAllProducts, getAllProductsByCatId, uploadImages,getAllProductsByCatName, getAllProductsBySubCatId,getAllProductsBySubCatName,getAllProductsByThirdLavelCatId, getAllProductsByThirdLavelCatName, getAllProductsByPrice, getAllProductsByRating, getAllProductsCount, getAllFeaturedProducts, deleteProduct, getProducts, removeImageFromCloudinary, updateProduct, deleteMultipleProduct, createProductSize, deleteProductSize, updateProductSize, deleteMultipleProductSize, getProductSize, getProductSizeById, filters, sortBy, searchProductController } from '../controllers/productcontroller.js';
 
 const productRouter = Router();
 
@@ -19,6 +19,7 @@ productRouter.post('/uploadImages', auth, (req, res, next) => {
 }, uploadImages);
 productRouter.post('/create', auth, createProduct);
 productRouter.post('/filters',filters);
+productRouter.post('/search/get' ,searchProductController)
 productRouter.post('/sortBy',sortBy);
 productRouter.get('/getAllProducts',  getAllProducts);
 productRouter.get('/getAllProductsByCatId/:id',  getAllProductsByCatId);
@@ -44,6 +45,7 @@ productRouter.put('/productSize/:id',auth,updateProductSize);
 productRouter.delete('/productSize/deleteMultipleSize',deleteMultipleProductSize);
 productRouter.get('/productSize/get',getProductSize);
 productRouter.get('/productSize/:id',getProductSizeById);
+
 
 
 export default productRouter; 

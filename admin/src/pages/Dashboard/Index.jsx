@@ -2,6 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { FaPlus } from "react-icons/fa6";
+import { AiTwotoneGift } from "react-icons/ai";
+import { IoStatsChartSharp } from "react-icons/io5";
+import { FaChartPie, FaBoxOpen } from "react-icons/fa6";
+import { BsBarChartFill } from "react-icons/bs";
+import { RiBarChartFill } from "react-icons/ri";
+import { HiChartBar } from "react-icons/hi2";
+import { PiPiggyBankDuotone } from "react-icons/pi";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -23,14 +30,14 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { PiExportBold } from "react-icons/pi";
 import {
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
-  BarChart,
-  Bar,
 } from "recharts";
 import Badge from "../../Components/Badge/Index.jsx";
 import { MyContext } from "../../App.jsx";
@@ -152,28 +159,20 @@ const Dashboard = () => {
   const [sortedIds, setSortedIds] = useState([]);
   const context = useContext(MyContext);
   const [productData, setProductData] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [salesMap, setSalesMap] = useState({});
   const [productCat, setProductCat] = useState("");
   const [productSubCat, setProductSubCat] = useState("");
   const [productThirdLavelCat, setProductThirdLavelCat] = useState("");
    const [orders, setOrders] = useState([]);
-   const [pageOrder, setPageOrder] = useState(1); 
-   const [searchQuery, setSearchQuery] = useState("");
-   const [totalOrdersData, setTotalOrdersData] = useState([]);
-   const [ordersData, setOrdersData] = useState([]);
-
-   const [users, setUsers] = useState([]);
-   const [allReviews, setAllReviews] = useState([]);
-   const [ordersCount, setOrdersCount] = useState(null);
-   const [chartData, setChartData] = useState([]);
-   const [year, setYear] = useState(new Date().getFullYear());
-
 
   const handleChangeProductCat = (event) => {
     setIsLoading(true);
     setProductCat(event.target.value);
     setProductSubCat("");
     setProductThirdLavelCat("");
+    setPage(0);
     fetchDataFromApi(
       `/api/product/getAllProductsByCatId/${event.target.value}`
     ).then((res) => {
@@ -190,6 +189,7 @@ const Dashboard = () => {
     setProductSubCat(event.target.value);
     setProductCat("");
     setProductThirdLavelCat("");
+    setPage(0);
     setIsLoading(true);
     fetchDataFromApi(
       `/api/product/getAllProductsBySubCatId/${event.target.value}`
@@ -207,7 +207,8 @@ const Dashboard = () => {
         setProductThirdLavelCat(event.target.value);
         setProductCat('');
           setProductSubCat('');
-          
+          setPage(0);
+
         setIsLoading(true)
         fetchDataFromApi(
           `/api/product/getAllProductsByThirdLavelCatId/${event.target.value}`
@@ -217,201 +218,38 @@ const Dashboard = () => {
              setTimeout(() => {
               setIsLoading(false)
             }, 500);
-          
+
           }
         });
       };
 
-  const isShowOrderdProduct = (index) => {
-    if (isOpenOrderProduct === index) {
-      setIsOpenOrderProduct(null);
-    } else {
-      setIsOpenOrderProduct(index);
-    }
-  };
  
 
-  useEffect(() => {
-    fetchDataFromApi(`/api/order/order-list?page=${pageOrder}&limit=5`).then((res) => {
-      if(res?.error===false){
-        setOrdersData(res)
-        // setOrdersData(res?.data)
-      }
-    })
-
-    fetchDataFromApi(`/api/order/order-list`).then((res) => {
-      if(res?.error === false) {
-        setTotalOrdersData(res)
-      }
-    })
-    fetchDataFromApi(`/api/order/count`).then((res) => {
-      if(res?.error === false) {
-        setOrdersCount(res?.count)
-      }
-    })
-
-  },[pageOrder])
-
-
-  useEffect(() => {
-    // Filter order based on search Query
-    if(searchQuery !== "" ) {
-      const filteredOrders = totalOrdersData?.data?.filter((order) => 
-      order._id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order?.userId?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order?.userId?.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order?.createdAt.includes(searchQuery)
-      );
-      setOrdersData(filteredOrders)
-    } else {
-      fetchDataFromApi(`/api/order/order-list?page=${pageOrder}&limit=5`).then((res) => {
-        if(res?.error === false) {
-            setOrdersData(res)
-            setOrdersData(res?.data)
-        }
-      })
-    }
-  }, [searchQuery])
-
-
-  useEffect(() => {
-    getTotalSalesByYear();
-
-    fetchDataFromApi('/api/user/getAllUsers').then((res) =>{
-      if(res?.error === false) {
-        setUsers(res?.users)
-      }
-    })
-
-    fetchDataFromApi("/api/user/getAllReviews").then((res) =>{
-      if(res?.error === false) {
-        setAllReviews(res?.reviews)
-      }
-    })
-  }, []);
-
-  const getTotalUsersByYear = () => {
-    fetchDataFromApi(`/api/order/users`).then((res) => {
-      const users = [];
-      res?.TotalUsers?.length !== 0 &&
-      res?.TotalUsers?.map((item) => {
-        users.push({
-          name: item?.name,
-          TotalUsers: parseInt(item?.TotalUsers),
-        });
-      });
-
-      const uniqueArr = user.filter(
-        (obj, index, self) => 
-          index === self.findIndex((t) => t.name === obj.name)
-      );
-      setChartData(uniqueArr);
-    })
-  }
-
-  const getTotalSalesByYear = () => {
-    fetchDataFromApi(`/api/order/sales`).then((res) => {
-      const sales = [];
-      res?.monthlySales?.length !== 0 &&
-      res?.monthlySales?.map((item) => {
-        sales.push({
-          name: item?.name,
-          TotalSales: parseInt(item?.TotalSales),
-        });
-      });
-
-      const uniqueArr = sales.filter(
-        (obj, index, self) => 
-          index === self.findIndex((t) => t.name === obj.name)
-      );
-      setChartData(uniqueArr);
-    });
-  }
-
-  const handleChangeYear = (event) => {
-    getTotalSalesByYear(event.target.value)
-    setYear(event.target.value);
-  };
-
+ 
+  
+   const isShowOrderdProduct =(index)=>{
+     if(isOpenOrderProduct===index){
+       setIsOpenOrderProduct(null);
+     }else{
+       setIsOpenOrderProduct(index);
+   
+     }
+   }
+   
+   useEffect(() => {
+    getChartData();
+     fetchDataFromApi('/api/order/order-list').then((res)=>{
+       if(res?.error===false){
+       setOrders(res?.data);
+       }
+     })
+   },[])
 
 
   const [page, setPage] = React.useState(0);
-
-  const [chart1Data, setChart1Data] = useState([
-    {
-      name: "Jan",
-      Total_Users: 4000,
-      Total_Sales: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Feb",
-      Total_Users: 3000,
-      Total_Sales: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Mar",
-      Total_Users: 2000,
-      Total_Sales: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Apr",
-      Total_Users: 2780,
-      Total_Sales: 3908,
-      amt: 2000,
-    },
-    {
-      name: "May",
-      Total_Users: 1890,
-      Total_Sales: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Jun",
-      Total_Users: 2390,
-      Total_Sales: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Jul",
-      Total_Users: 7490,
-      Total_Sales: 4300,
-      amt: 2100,
-    },
-    {
-      name: "Aug",
-      Total_Users: 4490,
-      Total_Sales: 8300,
-      amt: 2100,
-    },
-    {
-      name: "Sep",
-      Total_Users: 3490,
-      Total_Sales: 6300,
-      amt: 2100,
-    },
-    {
-      name: "Oct",
-      Total_Users: 5090,
-      Total_Sales: 3300,
-      amt: 2100,
-    },
-    {
-      name: "Nov",
-      Total_Users: 0,
-      Total_Sales: 0,
-      amt: 0,
-    },
-    {
-      name: "Dec",
-      Total_Users: 0,
-      Total_Sales: 0,
-      amt: 0,
-    },
-  ]);
-
+ const [chartData, setChartData]=useState([]);
+ const [year, setYear]=useState(new Date().getFullYear())
+  
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
@@ -430,6 +268,7 @@ const Dashboard = () => {
         }
        setTimeout(() =>{
          setProductData(productArr);
+         setTotalProducts(res?.products?.length);
          setIsLoading(false)
        },500)
       }
@@ -535,8 +374,90 @@ const Dashboard = () => {
     setcategoryFilterValue(event.target.value);
   };
 
+  const totalSales = orders.reduce((sum, order) => sum + (order.totalAmt || 0), 0);
+
+  const boxesData = [
+    {
+      title: "New Orders",
+      value: orders.length.toString(),
+      icon1: AiTwotoneGift,
+      icon2: IoStatsChartSharp,
+      color: "#ff0000",
+      size1: "40px",
+      size2: "40px"
+    },
+    {
+      title: "Sales",
+      value: `₹${totalSales}`,
+      icon1: FaChartPie,
+      icon2: BsBarChartFill,
+      color: "#0000ff",
+      size1: "40px",
+      size2: "40px"
+    },
+    {
+      title: "Revenue",
+      value: `₹${totalSales}`,
+      icon1: PiPiggyBankDuotone,
+      icon2: RiBarChartFill,
+      color: "#00ff00",
+      size1: "55px",
+      size2: "40px"
+    },
+    {
+      title: "Products",
+      value: totalProducts.toString(),
+      icon1: FaBoxOpen,
+      icon2: HiChartBar,
+      color: "#bf00ff",
+      size1: "40px",
+      size2: "40px"
+    }
+  ];
+
+  const getChartData = (year = new Date().getFullYear()) => {
+    Promise.all([
+      fetchDataFromApi(`/api/order/sales?year=${year}`),
+      fetchDataFromApi(`/api/order/users?year=${year}`)
+    ]).then(([salesRes, usersRes]) => {
+      const salesMap = {};
+      if (salesRes?.monthlySales?.length !== 0) {
+        salesRes.monthlySales.forEach(item => {
+          salesMap[item.name] = { Total_Sales: parseInt(item.totalSales) };
+        });
+      }
+
+      const data = [];
+      if (usersRes?.TotalUsers?.length !== 0) {
+        usersRes.TotalUsers.forEach(item => {
+          const name = item.name;
+          const totalUsers = parseInt(item.TotalUsers);
+          if (salesMap[name]) {
+            data.push({ name, Total_Sales: salesMap[name].Total_Sales, Total_Users: totalUsers });
+            delete salesMap[name];
+          } else {
+            data.push({ name, Total_Sales: 0, Total_Users: totalUsers });
+          }
+        });
+      }
+
+      // Add remaining sales
+      Object.keys(salesMap).forEach(name => {
+        data.push({ name, Total_Sales: salesMap[name].Total_Sales, Total_Users: 0 });
+      });
+
+      setChartData(data);
+    });
+  }
+
+  const handleChangeYear = (event)=>{
+    setYear(event.target.value)
+    getChartData(event.target.value)
+  }
+
+
   return (
-    <Das>
+    <>
       <div className="w-full py-2 px-5 border border-[rgba(0,0,0,0.1)] rounded-md bg-white flex items-center justify-between mb-6 gap-8">
         <div className="info">
           <h1 className="text-[30px] font-[600] leading-18">
@@ -557,17 +478,17 @@ const Dashboard = () => {
         <img src={dashboard} className="w-[250px]" alt="Dashboard" />
       </div>
 
-      {
-        productData?.length !==0 && users?.length !== 0 && allReviews?.length !==0 &&
-        <DashboardBoxes orders={ordersCount.length} products={productData?.length} users={users?.length}
-        reviews={allReviews?.length} category={context?.catData?.length} /> 
-      }
-    
-      
+      <DashboardBoxes data={boxesData} />
 
       <div className="card my-5 shadow-md sm:rounded-lg bg-white">
         <div className="px-4 py-5 sm:px-6 flex items-center justify-between">
-          <h2 className="text-[18px] font-[600]">Products</h2>
+          <div>
+            <h2 className="text-[18px] font-[600]">Products</h2>
+            <p className="!mt-0">
+              There are
+              <span className="font-bold text-orange-600 ">{productData?.length}</span> Products
+            </p>
+          </div>
           <div className="col w-[35%] ml-auto flex items-center justify-end gap-3">
             {sortedIds?.length !== 0 && (
               <Button
@@ -783,338 +704,167 @@ const Dashboard = () => {
       <div className="card my-5 shadow-md sm:rounded-lg bg-white">
         <div className="px-4 py-5 sm:px-6 flex items-center justify-between">
           <h2 className="text-[18px] font-[600]">Recent Orders</h2>
-          <div className="w-[25%">
-            <SearchBox
-               searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                setPageOrder={setPageOrder}
-            />
-          </div>
-        </div>  
-
-         <div className="relative overflow-x-auto !mt-5">
+        </div>
+          <div className="col2 w-full">
+           <div className="shadow-md rounded-md  bg-white">
+              <div className="py-2 px-3 border-b border-[rgba(0,0,0,0.1)]">
+                <h2 className="text-[18px] font-[600]">My Order</h2>
+                <p className="!mt-0">
+                  There are
+                  <span className="font-bold text-orange-600 ">{orders?.length}</span> Order
+                </p>
+                  <div className="relative overflow-x-auto !mt-5">
+                <table className="w-full text-sm text-left rtl:text-right text-black ">
+                  <thead className="text-xs text-black uppercase  ">
+                    <tr>
+                       <th scope="col" className="px-6 py-3">
+                        &nbsp;
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                        Order Id
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Payment Id
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Name
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Number
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Address
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       PinCode
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Total
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Email
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       User Id
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Order Status
+                      </th>
+                       <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Date
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      orders?.length!==0 && orders?.map((order,index)=>{
+                        return(
+                            <>
+                             <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
+                      <td className="px-6 py-4">
+                        <Button className='!w-[35px] !h-[35px] !min-w-[35px] !rounded-full !bg-[#f1f1f1]' onClick={()=>isShowOrderdProduct(index)} >
+                          {
+                            isOpenOrderProduct === index ? <FaAngleUp className='text-[18px] text-[#000]' /> : <FaAngleDown className='text-[18px] text-[#000]' />
+                          }
+                         </Button>
+                      </td>
+                      <td className="px-6 py-4">{order?._id}</td>
+                      <td className="px-6 py-4">{order?.paymentId ? order?.paymentId : "Cash on Delivery"}</td>
+                      <td className="px-6 py-4">{order?.userId?.name}</td>
+                      <td className="px-6 py-4">{order?.userId?.mobile}</td>
+                      <td className="px-6 py-4 "><span className='block w-[300px]'>{order?.delivery_address?.address_line1 + " " + order?.delivery_address?.city + " " + order?.delivery_address?.landmark + " " + order?.delivery_address?.country + " " + order?.delivery_address?.state  }</span> </td>
+                      <td className="px-6 py-4">{order?.delivery_address?.pincode}</td>
+                      <td className="px-6 py-4">{order?.totalAmt}</td>
+                      <td className="px-6 py-4">{order?.userId?.email}</td>
+                      <td className="px-6 py-4">{order?.userId?._id}</td>
+                      <td className="px-6 py-4"><Badge status={order?.order_status} /></td>
+                      <td className="px-6 py-4 whitespace-nowrap">{order?.createdAt?.split("T")[0]}</td>
+                    </tr>
+                    {
+                      isOpenOrderProduct=== index && (
+                        <tr>
+                      <td className='bg-[#f1f1f1] pl-20' colSpan={7}>
+                        <div className='relative overflow-x-auto'>
                         <table className="w-full text-sm text-left rtl:text-right text-black ">
-                          <thead className="text-xs text-black uppercase  ">
-                            <tr>
-                               <th scope="col" className="px-6 py-3">
-                                &nbsp;
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                Order Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Payment Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Name
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Number
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Address
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               PinCode
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Total
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Email
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               User Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Order Status
-                              </th>
-                               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Date
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-        
-                            {
-                              ordersData?.data?.length!==0 && ordersData?.data?.map((order,index)=>{
-                                return(
-                                  <>
-                                     <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
-                              <td className="px-6 py-4">
-                                <Button className='!w-[35px] !h-[35px] !min-w-[35px] !rounded-full !bg-[#f1f1f1]' onClick={()=>isShowOrderdProduct(index)} >
-                                  {
-                                    isOpenOrderProduct === index ? <FaAngleUp className='text-[18px] text-[#000]' /> : <FaAngleDown className='text-[18px] text-[#000]' />
-                                  }
-                                 </Button>
-                              </td>
-                              <td className="px-6 py-4">{order?._id}</td>
-                              <td className="px-6 py-4">{order?.paymentId ? order?.paymentId : 'CASH ON DELIVERY'}</td>
-                              <td className="px-6 py-4">{order?.userId?.name}</td>
-                              <td className="px-6 py-4">{order?.userId?.mobile}</td>
-                              <td className="px-6 py-4 "><span className='block w-[300px]'>
-                                {order?.delivery_address?.
-                                address_line1 + " " + 
-                                order?.delivery_address?.city+ " " + 
-                                order?.delivery_address?.state + " " +
-                                order?.delivery_address?.country + ' ' + order?.delivery_address?.mobile
-                                }
-                                </span> 
-                                </td>
-                              <td className="px-6 py-4">{order?.delivery_address?.pincode}</td>
-                              <td className="px-6 py-4">{order?.totalAmt}</td>
-                              <td className="px-6 py-4">{order?.userId?.email}</td>
-                              <td className="px-6 py-4">{order?.userId?._id}</td>
-                              <td className="px-6 py-4"><Badge status={order?.order_status} /></td>
-                              <td className="px-6 py-4 whitespace-nowrap">{order?.createdAt?.split("T")[0]}</td>
-                            </tr>
-                            {
-                              isOpenOrderProduct=== index && (
-                                <tr>
-                              <td className='bg-[#f1f1f1] pl-20' colSpan={6}>
-                                <div className='relative overflow-x-auto'>
-                                <table className="w-full text-sm text-left rtl:text-right text-black ">
-        
-                          
-                           <thead className="text-xs text-black uppercase  ">
-                            <tr>
-                             
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                Product Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Product Title 
-                               </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Image
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Qty
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Price
-                              </th>
-                             
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Sub total 
-                              </th>
-                             </tr>
-                             
-                          </thead>
-                          <tbody>
-                            {
-                               order?.products?.map((item,index)=>{
-                                return(
-                                  <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
-                              
-                              <td className="px-6 py-4">{item?._id}</td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="w-[200px">
-                                {item?.productTitle}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4">
-                                <img src={item?.image} alt="" className='w-[40px] h-[40px] object-cover rounded-md'/>
-                              </td>
-                              <td className="px-6 py-4">{item?.quantity}</td>
-                              <td className="px-6 py-4 ">{item?.price?.toLocaleString('en-Us', {style:'currency', currency: 'INR'})} </td>
-                              <td className="px-6 py-4">{(item?.price * item?.quantity)?.toLocaleString('en-Us', {style:'currency', currency: 'INR'})}</td>
-                             
-                            </tr>
-                                )
-                               })
-                            }
-        
-                            <tr>
-                              <td className='bg-[#f1f1f1]' colSpan={6}>
-                                
-                              </td>
-                            </tr>
-                            
-                          </tbody>
-                        </table>
-                        </div>
-                              </td>
-                            </tr>
-                              )}
-                                  </>
-                                )
-                              })
-                            }
-                          </tbody>
-                        </table>
-                      </div>
+                  <thead className="text-xs text-black uppercase  ">
+                    <tr>
+                     
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                        Product Id
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Product Title 
+                       </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Image
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Qty
+                      </th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Price
+                      </th>
+                     
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                       Sub total 
+                      </th>
+                      
+                     </tr>
+                     
+                  </thead>
+                  <tbody>
+                    {
+                      order?.products?.map((item, index)=>{
+                        return(
+                          <>
+                            <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
+                     <td className="px-6 py-4">{item?.productId?._id || item?._id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{item?.productId?.name || item?.name}</td>
+                      <td className="px-6 py-4">
+                        <img src={item?.productId?.images?.[0] || item?.image?.[0] || item?.image} alt="" className='w-[40px] h-[40px] object-cover rounded-md'/>
+                      </td>
+                      <td className="px-6 py-4">{item?.quantity}</td>
+                      <td className="px-6 py-4 ">₹{item?.price} </td>
+                      <td className="px-6 py-4">₹{item?.price * item?.quantity}</td>
+                      
+                    </tr>
+                          </>
+                        )
+                      })
+                    }
+                  
+
+                    <tr>
+                      <td className='bg-[#f1f1f1]' colSpan={7}>
                         
-                        {/* <table className="w-full text-sm text-left rtl:text-right text-black ">
-                          <thead className="text-xs text-black uppercase  ">
-                            <tr>
-                               <th scope="col" className="px-6 py-3">
-                                &nbsp;
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                Order Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Payment Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Name
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Number
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Address
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               PinCode
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Total
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Email
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               User Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Order Status
-                              </th>
-                               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Date
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
-                              <td className="px-6 py-4">
-                                <Button className='!w-[35px] !h-[35px] !min-w-[35px] !rounded-full !bg-[#f1f1f1]' onClick={()=>isShowOrderdProduct(1)} >
-                                  {
-                                    isOpenOrderProduct === 1 ? <FaAngleUp className='text-[18px] text-[#000]' /> : <FaAngleDown className='text-[18px] text-[#000]' />
-                                  }
-                                 </Button>
-                              </td>
-                              <td className="px-6 py-4">123456</td>
-                              <td className="px-6 py-4">4564tyut56</td>
-                              <td className="px-6 py-4">Gagan</td>
-                              <td className="px-6 py-4">4564564564</td>
-                              <td className="px-6 py-4 "><span className='block w-[300px]'>MOnn H.NO 29 outside the earth</span> </td>
-                              <td className="px-6 py-4">12345</td>
-                              <td className="px-6 py-4">1200</td>
-                              <td className="px-6 py-4">Gagan@gmail.com</td>
-                              <td className="px-6 py-4">12345646</td>
-                              <td className="px-6 py-4"><Badge status="delivered" /></td>
-                              <td className="px-6 py-4 whitespace-nowrap">12-2-2025</td>
-                            </tr>
-                            {
-                              isOpenOrderProduct=== 1 && (
-                                <tr>
-                              <td className='bg-[#f1f1f1] pl-20' colSpan={6}>
-                                <div className='relative overflow-x-auto'>
-                                <table className="w-full text-sm text-left rtl:text-right text-black ">
-                          <thead className="text-xs text-black uppercase  ">
-                            <tr>
-                             
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                Product Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Product Title 
-                               </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Image
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Qty
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Price
-                              </th>
-                             
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Sub total 
-                              </th>
-                             </tr>
-                             
-                          </thead>
-                          <tbody>
+                      </td>
+                    </tr>
+                    
+                  </tbody>
+              
+                  
+                </table>
+                </div>
+                      </td>
+                    </tr>
+                      )
+                    }
+                    
+                            </>
+                        )
+                      })
+                    } 
+                  </tbody>
+                </table>
+             
+              </div>
+              </div>
+            </div>
+           
+            
+        </div>
         
-                            <tr>
-                              <td className='bg-[#f1f1f1]' colSpan={6}>
-                                
-                              </td>
-                            </tr>
-                            
-                          </tbody>
-                           <thead className="text-xs text-black uppercase  ">
-                            <tr>
-                             
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                Product Id
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Product Title 
-                               </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Image
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Qty
-                              </th>
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Price
-                              </th>
-                             
-                              <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                               Sub total 
-                              </th>
-                             </tr>
-                             
-                          </thead>
-                          <tbody>
-                            <tr className="bg-white border-b  dark:border-gray-700 border-gray-200 font-[600]">
-                              
-                              <td className="px-6 py-4">123456</td>
-                              <td className="px-6 py-4 whitespace-nowrap">A -lien color Blue shari for ladiys this is cool</td>
-                              <td className="px-6 py-4">
-                                <img src="https://demos.codezeel.com/prestashop/PRS21/PRS210502/90-home_default/hummingbird-cushion.jpg" alt="" className='w-[40px] h-[40px] object-cover rounded-md'/>
-                              </td>
-                              <td className="px-6 py-4">2</td>
-                              <td className="px-6 py-4 ">1200 </td>
-                              <td className="px-6 py-4">1200</td>
-                             
-                            </tr>
-        
-                            <tr>
-                              <td className='bg-[#f1f1f1]' colSpan={6}>
-                                
-                              </td>
-                            </tr>
-                            
-                          </tbody>
-                        </table>
-                        </div>
-                              </td>
-                            </tr>
-                              )
-                            }
-                          </tbody>
-                        </table> */}
-
-
-                        {
-                          orders?.totalPages > 1 &&
-                          <div className="flex items-center justify-center mt-10 pb-5">
-                            <Pagination
-                               showFirstButton showLastButton
-                               count={orders?.totalPages}
-                               page={pageOrder}
-                               onChange={(e, value) => setPageOrder(value)}
-                            />
-                         </div>
-                        } 
-             </div>
+      </div>
 
       <div className="card my-5 shadow-md sm:rounded-lg bg-white">
         <div className="px-4 py-5 sm:px-6 flex items-center justify-between pb-0">
@@ -1123,64 +873,51 @@ const Dashboard = () => {
           </h2>
         </div>
 
-        <div className="px-5 py-5 pt-1 sm:px-6 flex items-center gap-5 ">
-          <span className="flex items-center gap-1 text-[15px] cursor-pointer " onClick={getTotalUsersByYear}>
-            <span className="block w-[8px] h-[8px] rounded-full bg-blue-600"></span>
+        <div className="px-4 py-5 sm:px-6 flex items-center gap-5 ">
+          <span className="flex items-center gap-1 text-[15px]">
+            <span className="block w-[8px] h-[8px] rounded-full bg-green-600"></span>
             Total Users
           </span>
 
-          <span className="flex items-center gap-1 text-[15px] cursor-pointer " onClick={getTotalSalesByYear}>
-            <span className="block w-[8px] h-[8px] rounded-full bg-green-600"></span>
+          <span className="flex items-center gap-1 text-[15px]">
+            <span className="block w-[8px] h-[8px] rounded-full bg-blue-600"></span>
             Total Sales
           </span>
         </div>
 
         <ResponsiveContainer width="100%" height={400}>
-          {chart1Data?.length !== 0 &&
-          <BarChart
-             width={1000}
-             height={500}
-             data={chartData}
-             margin={{
+          {
+            chartData?.length !==0 &&
+            <LineChart
+            data={chartData}
+            margin={{
               top: 5,
-              right: 30,
+              right: 0,
               left: 20,
-              bottom: 5,
-             }}
-            >
-              <XAxis
-                 dataKey="name"
-                 scale="point"
-                 padding={{ left: 10, right: 10 }}
-                 tick={{ fontSize: 12 }}  
-                 label={{position: "insideBottom", fontSize: 14}}
-                 style={{fill: context?.theme === "dark" ? "white" : "#000" }}
-              />
-              <YAxis 
-                  tick={{ fontSize: 12 }}
-                  label={{position: "insideBottom", fontSize: 14}}  
-                  style={{fill: context?.theme === "dark" ? "white" : "#000" }}
-              />
-              <Tooltip
-                  content={{
-                    backgroundColor: "#71739",
-                    color: "white",
-                  }}  // Set tooltip background and text color
-                  labelStyle={{ color: "yellow" }}  // Set label text color
-                  itemStyle={{ color: "cyan" }}   // Set color for individual items in the tooltip
-                  cursor={{ fill: "white" }}    // Customize the tooltip cursor background on hover
-              />
-              <Legend />
-              <CartesianGrid
-                  strokeDasharray="3 3"
-                  horizontal={false}
-                  vertical={false}
-              /> 
-              <Bar dataKey= "TotalSales" stackId="a" fill="#16a34a" />
-              <Bar dataKey="TotalUsers" stackId="b" fill="#0858f7" />
-
-            </BarChart>
+              bottom: 10,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="none" />
+            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+            <YAxis width="auto" tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="Total_Sales"
+              stroke="#0045d0ff"
+              strokeWidth={3}
+              activeDot={{ r: 8 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="Total_Users"
+              stroke="#00b309ff"
+              strokeWidth={3}
+            />
+          </LineChart>
           }
+          
         </ResponsiveContainer>
       </div>
     </>

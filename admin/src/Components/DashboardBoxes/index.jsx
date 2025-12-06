@@ -3,16 +3,56 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
+import { AiTwotoneGift } from "react-icons/ai";
 import { IoStatsChartSharp } from "react-icons/io5";
-import {BsBank} from "react-icons/bs";
-import {Button} from "@mui/material";
-import {GoGift} from "react-icons/go";
-import {FiPieChart} from "react-icons/fi";
-import {RiProductHuntLine} from "react-icons/ri";
-import {MdOutlineReviews} from "react-icons/md";
+import { FaChartPie, FaBoxOpen } from "react-icons/fa6";
+import { BsBarChartFill } from "react-icons/bs";
+import { RiBarChartFill } from "react-icons/ri";
+import { HiChartBar } from "react-icons/hi2";
+import { PiPiggyBankDuotone } from "react-icons/pi";
 
+const DashboardBoxes = ({ data }) => {
+  const defaultData = [
+    {
+      title: "New Orders",
+      value: "1,398",
+      icon1: AiTwotoneGift,
+      icon2: IoStatsChartSharp,
+      color: "#ff0000",
+      size1: "40px",
+      size2: "40px"
+    },
+    {
+      title: "Sales",
+      value: "₹58,384",
+      icon1: FaChartPie,
+      icon2: BsBarChartFill,
+      color: "#0000ff",
+      size1: "40px",
+      size2: "40px"
+    },
+    {
+      title: "Revenue",
+      value: "₹12,209",
+      icon1: PiPiggyBankDuotone,
+      icon2: RiBarChartFill,
+      color: "#00ff00",
+      size1: "55px",
+      size2: "40px"
+    },
+    {
+      title: "Products",
+      value: "540",
+      icon1: FaBoxOpen,
+      icon2: HiChartBar,
+      color: "#bf00ff",
+      size1: "40px",
+      size2: "40px"
+    }
+  ];
 
-const DashboardBoxes = (props) => {
+  const boxesData = data || defaultData;
+
   return (
     <>
       <Swiper
@@ -20,56 +60,24 @@ const DashboardBoxes = (props) => {
         spaceBetween={30}
         navigation={true}
         modules={[Navigation]}
-        className="dashboardBoxesSlider"
+        className="dashboardboxslider"
       >
-
-        <SwiperSlide>
-           <div className="box bg-[#10b981] p-5 py-6 cursor-pointer hover:bg-[#289974] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4">
-            <FiPieChart className="text-[50px] text-[#fff] " />
-            <div className="info w-[70%] "> 
-              <h3 className="text-white">Total Users</h3>
-              <b className="text-white text-[20px]">{props?.users}</b>
-            </div>
-            <IoStatsChartSharp className="text-[50px] text-[#fff] " />
-           </div>
-        </SwiperSlide> 
-
-
-        <SwiperSlide>
-           <div className="box bg-[#3872fa] p-5 py-6 cursor-pointer hover:bg-[#346ae8] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4">
-            <GoGift className="text-[40px] text-[#fff]" />
-            <div className="info w-[70%] "> 
-              <h3 className="text-white">Total Orders</h3>
-              <b className="text-white text-[20px]">{props?.orders}</b>
-            </div>
-            <FiPieChart className="text-[50px] text-[#fff] " />
-           </div>
-        </SwiperSlide>
-
-
-        <SwiperSlide>
-            <div className="box bg-[#321be1d8] p-5 py-6 cursor-pointer hover:bg-[#423eadd8] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4">
-              <RiProductHuntLine className="text-[40px] text-[#fff]" />
-              <div className="info w-[70%] "> 
-              <h3 className="text-white">Total Products</h3>
-              <b className="text-white text-[20px]">{props?.products}</b>
-            </div>
-            <IoStatsChartSharp className="text-[50px] text-[#fff] " />
-            </div>
-        </SwiperSlide>
-
-
-        <SwiperSlide>
-            <div className="box bg-[#f22c61] p-5 py-6 cursor-pointer hover:bg-[#d52c59] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4">
-              <MdOutlineReviews className="text-[40px] text-[#fff]" />
-              <div className="info w-[70%] "> 
-              <h3 className="text-white">Total Category</h3>
-              <b className="text-white text-[20px]">{props?.category}</b>
-            </div>
-            <IoStatsChartSharp className="text-[50px] text-[#fff] " />
-            </div>
-        </SwiperSlide>
-
+        {boxesData.map((item, index) => {
+          const Icon1 = item.icon1;
+          const Icon2 = item.icon2;
+          return (
+            <SwiperSlide key={index}>
+              <div className="box p-5 cursor-pointer hover:bg-[#f1f1f2] shadow-inner rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4 bg-white">
+                <Icon1 style={{ fontSize: item.size1, color: item.color }} />
+                <div className="info w-[70%]">
+                  <h3>{item.title}</h3>
+                  <span className="text-[23px]"><b>{item.value}</b></span>
+                </div>
+                <Icon2 style={{ fontSize: item.size2, color: item.color }} />
+              </div>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </>
   );

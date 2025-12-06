@@ -1,19 +1,16 @@
-import React from 'react';
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
-
-
-export const OrderSuccess = () => {
-    return (
-        <section className='w-full p-10 py-20 flex items-center justify-center flex-col gap-2'>
-            <img src="/check.png" width="120"  />
-            <h3 className='text-2xl mb-0 '>Your order is placed</h3>
-            <p className='mt-0'>Thank you for your payment.</p>
-
-            <Link to="/">
-                <Button className="btn-org btn-border">Back to home</Button>
-            </Link>    
-
-        </section>
-    )
+import React from 'react'
+import Button from '@mui/material/Button';
+const Success = () => {
+  return (
+    <>
+      <section className='w-full p-10 flex items-center justify-center flex-col gap-5'>
+        <img src="/order.gif" alt="" width="180" className='rounded-md' />
+        <h1 className='!mb-0 !text-[25px] !font-[600]'>Your Order is Placed</h1>
+        <p className='!mt-0 !text-[25px]'>Thank You for your payment🪙</p>
+        <Button className='!bg-orange-600 !text-white !rounded-md !py-2 !px-5 !mt-0 hover:!bg-black' href='/'>Back to Home</Button>
+      </section>
+    </>
+  )
 }
+
+export default Success

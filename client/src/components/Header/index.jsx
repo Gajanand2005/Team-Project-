@@ -16,10 +16,11 @@ import { FaUserAstronaut } from "react-icons/fa";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import { PiBagFill } from "react-icons/pi";
+import { PiBagFill } from "react-icons/pi"; 
 import { TbHeartHandshake } from "react-icons/tb";
 import { SlLogout } from "react-icons/sl";
 import { fetchDataFromApi, postData } from "../../Utlis/Api.js";
+import '../Search/style.css';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -90,7 +91,7 @@ const Header = () => {
                   </li>
                   <li className="list-none">
                     <Link
-                      to="/order-tracking"
+                      to="/my-order"
                       className="text-[9px] sm:text-[11px] lg:text-[13px] link font-[500] transition"
                     >
                       Order Tracking

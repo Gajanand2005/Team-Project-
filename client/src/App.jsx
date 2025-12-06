@@ -1,20 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
-import Header from "./Components/Header/Index.jsx";
 import Footer from "./Components/Footer/Index.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProductListing from "./Pages/ProductListing/Index.jsx";
 import ProductDetails from "./Pages/ProductDetails/index.jsx";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { IoClose } from "react-icons/io5";
-import ProductDetailsComponent from "./Components/ProductDetails/Index.jsx";
 import Login from "./Pages/Login/index.jsx";
 import Register from "./Pages/Register/index.jsx";
-import CartPage from "./Pages/Cart/index.jsx";
+import CartPage from "./Pages/Cart/Index.jsx";
 import toast, { Toaster } from "react-hot-toast";
 import ForgotPassword from "./Pages/ForgotPassword/Index.jsx";
 import CheckOut from "./Pages/CheckOut/index.jsx";
@@ -29,12 +20,16 @@ import Verify from "./Pages/Verify/index.jsx";
 import Address from "./Pages/MyAccount/Address.jsx";
 import Home from "./Pages/Home/Index.jsx";
 import Size from "./Pages/SizeGuide/Index.jsx";
-import { OrderSuccess } from "./Pages/Orders/success.jsx";
-import {OrderFailed} from "./Pages/Orders/failed.jsx";
+import Header from "./components/Header/index.jsx";
+import SearchPage from "./Pages/Search/index.jsx" ;
+import Success from "./Pages/Orders/success.jsx";
+import Failed from "./Pages/Orders/failed.jsx";
+import Delivery from "./Components/Footer/Delivery.jsx";
+import Aboutus from "./Components/Footer/Aboutus.jsx";
+
 
 
 const MyContext = createContext();
-
 const App = () => {
   const [openProductDetailsModal, setOpenProductDetailsModel] = useState({
     open: false,
@@ -58,6 +53,7 @@ const App = () => {
   const [myListData, setMyListData] = useState([]);
   const [addressData, setAddressData] = useState([]);
   const [addressId, setAddressId]= useState("");
+  const [searchData, setSearchData]= useState([]);
 const [currency, setCurrency] = useState("INR");
 const [currencyRate, setCurrencyRate] = useState(1);
 
@@ -167,15 +163,9 @@ const formatPrice = (amount) => {
       return false;
     }
 
-
-    // console.log("PRODUCT OBJECT:", product);
-
-
-
     const data = {
       productTitle: product?.name,
-      image: product?.images || product?.images?.[0],
-      // image: product?.images?.length > 0 ? product.images[0] : "/default.jpg",
+      image: product?.image || product?.images?.[0],
       price: product?.price,
       oldPrice: product?.oldPrice,
       discount: product?.discount,
@@ -187,10 +177,6 @@ const formatPrice = (amount) => {
       brand: product?.brand,
       size: Array.isArray(product?.size) ? product?.size?.[0] : product?.size || '',
     };
-
-    
-   
-
 
     postData("/api/cart/add", data).then((res) => {
       if (res?.error === false) {
@@ -292,7 +278,9 @@ setOpenSizeChart,
   currency,
   setCurrency,
   currencyRate,
-  formatPrice
+  formatPrice,
+  searchData,
+  setSearchData,
   };
 
   return (
@@ -301,44 +289,42 @@ setOpenSizeChart,
         <MyContext.Provider value={value}>
           <Header />
           <Routes>
-            <Route path={"/"} exact={true} element={<Home />} />
+            <Route path={"/"} element={<Home />} />
             <Route
               path={"/productListing"}
-              exact={true}
               element={<ProductListing />}
             />
             <Route
               path={"/product/:id"}
-              exact={true}
               element={<ProductDetails />}
             />
-            <Route path={"/login"} exact={true} element={<Login />} />
-            <Route path={"/register"} exact={true} element={<Register />} />
-            <Route path={"/cart"} exact={true} element={<CartPage />} />
-            <Route path={"/Verify"} exact={true} element={<Verify />} />
+            <Route path={"/login"} element={<Login />} />
+            <Route path={"/register"} element={<Register />} />
+            <Route path={"/cart"} element={<CartPage />} />
+            <Route path={"/Verify"} element={<Verify />} />
             <Route
               path={"/forgot-Password"}
-              exact={true}
               element={<ForgotPassword />}
             />
-            <Route path={"/checkout"} exact={true} element={<CheckOut />} />
-            <Route path={"/my-account"} exact={true} element={<MyAccount />} />
-            <Route path={"/my-list"} exact={true} element={<MyList />} />
-            <Route path={"/my-order"} exact={true} element={<Order />} />
-            <Route path={"/order/success"} exact={true} element={<OrderSuccess />} />
-            <Route path={"/order/failed"} exact={true} element={<OrderFailed />} />
+            <Route path={"/checkout"} element={<CheckOut />} />
+            <Route path={"/my-account"} element={<MyAccount />} />
+            <Route path={"/my-list"} element={<MyList />} />
+            <Route path={"/my-order"} element={<Order />} />
+            <Route path={"/order/success"} element={<Success/>} />
+            <Route path={"/order/failed"} element={<Failed/>} />
             <Route
               path={"/order-tracking"}
-              exact={true}
               element={<OrderTracking />}
             />
             <Route
               path={"/help-center"}
-              exact={true}
               element={<HelpCenter />}
             />
-            <Route path={"/address"} exact={true} element={<Address />} />
-            <Route path={"/size"} exact={true} element={<Size />} />
+            <Route path={"/address"} element={<Address />} />
+            <Route path={"/search"} element={<SearchPage />} />
+            <Route path={"/size"} element={<Size />} />
+            <Route path={"/delivery"} element={<Delivery />} />
+            <Route path={"/AboutUs"} element={<Aboutus />} />
           </Routes>
           <Whataap />
           <Footer />

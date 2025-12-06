@@ -104,6 +104,7 @@ export async function createProduct(req, res) {
            let product = new ProductModel({
                 name: req.body.name,
                 description: req.body.description,
+                sizeChart: req.body.sizeChart,
                 images: req.body.images,
                 brand: req.body.brand,
                 price: req.body.price,
@@ -156,7 +157,7 @@ export async function getAllProducts(req,res){
     try {
 
         const page = parseInt(req.query.page) || 1;
-        const perPage = parseInt(req.query.perPage) || 10;
+        const perPage = parseInt(req.query.perPage) || 10000;
         const totalPosts = await ProductModel.countDocuments();
         const totalPages = Math.ceil(totalPosts/ perPage);
 
@@ -859,6 +860,7 @@ export async function updateProduct(request, response) {
             {
                 name: request.body.name,
                 description: request.body.description,
+                sizeChart: request.body.sizeChart,
                 images: request.body.images,
                 brand: request.body.brand,
                 price: request.body.price,
@@ -1154,43 +1156,115 @@ export async function sortBy(request, response) {
 
 
 
+// export async function searchProductController(request,response) { 
+//     try{
+         
+//             const {query,page , limit }=request.body;
+
+//         if(!query){
+//             return response.status(400).json({
+//                 error:true,
+//                 success:false,
+//                 message:"Query is required"
+//             })
+//         }
+
+//                 const products = await ProductModel.find({
+//                   $or :[
+//                     {name:{$regex : query,$options: "i"}},
+//                     {brand:{$regex : query,$options: "i"}},
+//                     {catName:{$regex : query,$options: "i"}},
+//                     {subCat:{$regex : query,$options: "i"}},
+//                     {thirdsubCat:{$regex : query,$options: "i"}},
+//                   ]  
+//                 }).populate("category").skip((page - 1) * limit).limit(parseInt(limit));
+                    
+//                 const total = await products?.length
 
 
+//                 return response.status(200).json({
+//                     error:false,
+//                     success:true,
+//                     product:products,
+//                     total,
+//                     page: parseInt(page),
+//                    totalPages: Math.ceil(total / limit),
+//                 })
 
 
-
-
-
-
-
-
-//sort by Ui Tech
-// const sortedItems = (products,sortBy,order) => {
-//   return products.sort((a,b)=>{
-//     if(sortBy === 'name'){
-
-//         return order === 'asc' ? a.name.localCompare(b.name) : b.name.localCompare(a.name)
-//     }
-
-//     if(sortBy ==="price"){
-//         return order = 'asc' ? a.price -b.price : b.price - a.price
-//     }
-//     return ; 
-//   })
+//     }catch (error) {
+//     return response.status(500).json({
+//       message: error.message || error,
+//       error: true,
+//       success: false,
+//     });
+//   }
 // }
 
-// export async function sortBy(request, response) {
-//     const{products,sortBy,order}=request.body
-//     const sortedItems = sortedItems([...products?.products], sortBy , order)
+
+export async function searchProductController(request, response) {
+  try {
+    const { query, page = 1, limit = 10 } = request.body;
+
+    if (!query) {
+      return response.status(400).json({
+        error: true,
+        success: false,
+        message: "Query is required",
+      });
+    }
+
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    // Total Count (IMPORTANT)
+    const total = await ProductModel.countDocuments({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { brand: { $regex: query, $options: "i" } },
+        { catName: { $regex: query, $options: "i" } },
+        { subCat: { $regex: query, $options: "i" } },
+        { thirdsubCat: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    // Products for Current Page
+    const products = await ProductModel.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { brand: { $regex: query, $options: "i" } },
+        { catName: { $regex: query, $options: "i" } },
+        { subCat: { $regex: query, $options: "i" } },
+        { thirdsubCat: { $regex: query, $options: "i" } },
+      ],
+    })
+      .populate("category")
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    return response.status(200).json({
+      error: false,
+      success: true,
+      products: products,
+      total,
+      page: pageNumber,
+      totalPages: Math.ceil(total / limitNumber),
+    });
+  } catch (error) {
+    return response.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
 
 
-// return response.status(200).json({
-//     error:false,
-//     success:true,
-//     products:sortedItems,
-//     page:0,
-//     totalPages:0
-// })
 
 
-// }
+
+
+
+
+
+

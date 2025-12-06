@@ -1,36 +1,28 @@
 import OrderModel from "../models/ordermodel.js";
-import ProductModel from "../models/productmodel.js";
+import ProductModel from'../models/productmodel.js';
+import UserModel from '../models/usermodel.js';
 
-
-
-export const createOrderController = async (req,res) => {
+export const createOrderController = async (req, res)=>{
     try {
+        const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
         let order = new OrderModel({
             userId: req.body.userId,
+            orderId: orderId,
             products: req.body.products,
             paymentId: req.body.paymentId,
             payment_status: req.body.payment_status,
-            delivery_address:req.body.delivery_address,
-            totalAmt:req.body.totalAmt,
-            date:req.body.date
+            delivery_address: req.body.delivery_address,
+            totalAmt: req.body.totalAmt
         });
 
-        if(!order) {
-            res.status(500).json({
-                error:true,
-                success:false
-            })
-        }
-
-        for(let i = 0; i< req.body.products.length; i++) {
-
-            await ProductModel.findByIdAndUpdate(
-            req.body.products[i].productId,
-            {
-                countInStock: parseInt(req.body.products[i].countInStock - req.body.products[i].quantity),
-            },
-             { new: true }
+        // Update product stock
+        for(let i = 0; i < req.body.products.length; i++){
+            await ProductModel.findByIdAndUpdate(req.body.products[i].productId,
+                {
+                    $inc: { countInStock: -req.body.products[i].quantity }
+                },
+                {new: true}
             );
         }
 
@@ -39,96 +31,12 @@ export const createOrderController = async (req,res) => {
         return res.status(200).json({
             error: false,
             success: true,
-            message: "Order Placed",
-            order: order
+            message: "Order created successfully",
+            orderId: orderId
         });
-
-
-    } catch(error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
-
-
-export async function getOrderDetailsController(req,res) {
-    try {
-        const userId = req.userId  //order id
-
-        // const orderlist = await OrderModel.find({ userId: userId }).sort({ createdAt: -1 }).populate('delivery_address,userId');
-
-        const orderlist = await OrderModel.find()
-            .sort({ createdAt: -1 })
-            .populate("delivery_address")    
-            .populate("userId");                
-           
-
-
-        return res.json({
-            message: "Order list",
-            data: orderlist,
-            error: false,
-            success: true
-        })
-
 
     } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        });
-    }
-}
-
-
-export async function getTotalOrdersCountController(req,res) {
-    try {
-        const ordersCount = await OrderModel.countDocuments()
-        return res.status(200).json({
-            error: false,
-            success: true,
-            count: ordersCount
-         });
-
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        });
-    }
-}
-
-export const updateOrderStatusController = async (req,res) => {
-
-    try {
-
-        const {id, order_status} = req.body;
-
-
-    const updateOrder = await OrderModel.updateOne({
-                _id : id,
-             },{
-                order_status: order_status
-             },
-             {new:true}
-    )
-
-    return res.json({
-        message : " Update order status",
-        success : true,
-        error : false,
-        data : updateOrder
-
-     })
- 
-    } catch(error) {
-        return res.status(500).json({
+         return res.status(500).json({
             message: error.message || error,
             error : true,
             success: false
@@ -136,159 +44,121 @@ export const updateOrderStatusController = async (req,res) => {
     }
 }
 
-
-export const totalSalesController = async (req,res) => {
+export const getOrdersDetailsController = async (req, res)=>{
     try {
-        const currentYear = new Date().getFullYear();
+        const userId = req.userId;
 
+        const orderlist = await OrderModel.find({userId: userId}).sort({createdAt: -1}).populate('delivery_address userId products.productId')
+
+        return res.json({
+            message: "Order list fetched successfully",
+            data: orderlist,
+            error: false,
+            success: true,
+        })
+
+    } catch (error) {
+         return res.status(500).json({
+            message: error.message || error,
+            error : true,
+            success: false
+        })
+    }
+}
+
+export const updateOrderStatusController = async (req, res)=>{
+    const { id } = req.params;
+    const { order_status } = req.body;
+
+
+   try {
+     const updateOrder = await OrderModel.findByIdAndUpdate(
+        id,
+        {
+            order_status: order_status
+
+        },
+        { new: true }
+    )
+     return res.json({
+        message: "Order status updated successfully",
+        data: updateOrder,
+        error: false,
+        success: true,
+    })
+   } catch (error) {
+    return res.status(500).json({
+        message: error.message || error,
+        error : true,
+        success: false
+    })
+   }
+
+}
+
+export const totalSalesController = async (req,res)=>{
+    try {
+        const currentYear = req.query.year ? parseInt(req.query.year) : new Date().getFullYear();
         const ordersList = await OrderModel.find();
 
         let totalSales = 0;
         let monthlySales = [
             {
                 name: 'JAN',
-                TotalSales: 0
-            },
-            {
-                name: "FEB",
-                TotalSales: 0
-              },
-              {
-                name: "MAR",
-                TotalSales: 0
-              },
-              {
-                name: "APR",
-                TotalSales: 0
-              },
-              {
-                name: "MAY",
-                TotalSales: 0
-              },
-              {
-                name: "JUN",
-                TotalSales: 0
-              },
-              {
-                name: "JUL",
-                TotalSales: 0
-              },
-              {
-                name: "AUG",
-                TotalSales: 0
-              },
-              {
-                name: "SEP",
-                TotalSales: 0
-              },
-              {
-                name: "OCT",
-                TotalSales: 0
-              },
-              {
-                name: "NOV",
-                TotalSales: 0
-              },
-              {
-                name: "DEC",
-                TotalSales: 0
-              },
+                totalSales: 0
+            },{
+                name: 'FEB',
+                totalSales: 0
+            },{
+                name: 'MAR',
+                totalSales: 0
+            },{
+                name: 'APR',
+                totalSales: 0
+            },{
+                name: 'MAY',
+                totalSales: 0
+            },{
+                name: 'JUN',
+                totalSales: 0
+            },{
+                name: 'JUL',
+                totalSales: 0
+            },{
+                name: 'AUG',
+                totalSales: 0
+            },{
+                name: 'SEP',
+                totalSales: 0
+            },{
+                name: 'OCT',
+                totalSales: 0
+            },{
+                name: 'NOV',
+                totalSales: 0
+            },{
+                name: 'DEC',
+                totalSales: 0
+            }
         ]
 
-        for(let i =0 ; i<ordersList.length; i++) {
-            totalSales = totalSales + parseInt(ordersList[i].totalAmt);
-            const str = JSON.stringify(ordersList[i]?.createdAt);
-            const year = str.substr(1,4);
-            const monthStr = str.substr(6,8);
-            const month = pareseInt(monthStr.substr(0,2));
+            for(let i=0; i< ordersList.length; i++){
+                totalSales = totalSales + parseInt(ordersList[i].totalAmt);
+                const date = new Date(ordersList[i]?.createdAt);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
 
-            if(currentYear == year) {
-
-                if(month === 1) {
-                    monthlySales[0] = {
-                        name: 'JAN',
-                        TotalSales: monthlySales[0].TotalSales = parseInt(monthlySales[0].TotalSales) + parseInt(ordersList[i].totalAmt)
-                    }
-                }
-
-                if(month == 2) {
-                    monthlySales[1] = {
-                        name: 'FEB',
-                        TotalSales: monthlySales[1].TotalSales = parseInt(monthlySales[1].TotalSales) + parseInt(ordersList[i].totalAmt)
-                    }
-                }
-
-                if(month == 3) {
-                    monthlySales[2] = {
-                        name: 'MAR',
-                        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-                    }
-                }
-                if(month == 4) {
-                    monthlySales[3] = { 
-                        name: 'APR',
-                        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
+                if(currentYear == year){
+                    monthlySales[month - 1].totalSales += parseInt(ordersList[i].totalAmt);
                 }
             }
-            if(month == 5) {
-                monthlySales[4] = { 
-                    name: 'MAY',
-                    TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-            }
-        }
-        if(month == 6) {
-            monthlySales[5] = { 
-                name: 'JUN',
-                TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-        }
-    }
-    if(month == 7) {
-        monthlySales[6] = { 
-            name: 'JUL',
-            TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-    }
-}
-if(month == 8) {
-    monthlySales[7] = { 
-        name: 'AUG',
-        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-}
-}
-if(month == 9) {
-    monthlySales[8] = { 
-        name: 'SEP',
-        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-}
-}
-if(month == 10) {
-    monthlySales[9] = { 
-        name: 'OCT',
-        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-}
-}if(month == 11) {
-    monthlySales[10] = { 
-        name: 'NOV',
-        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-}
-}
-if(month == 12) {
-    monthlySales[11] = { 
-        name: 'DEC',
-        TotalSales: monthlySales[2].TotalSales = parseInt(monthlySales[2].TotalSales) + parseInt(ordersList[i].totalAmt)
-}
-}
 
-}
-
-}
-
-        return res.status(200).json({
-            error: false,
-            success: true,
-            totalSales: totalSales,
-            monthlySales: monthlySales
-         });
-
+            return res.status(200).json({
+                totalSales: totalSales,
+                monthlySales: monthlySales,
+                error: false,
+                success: true
+            })
 
     } catch (error) {
         return res.status(500).json({
@@ -299,167 +169,85 @@ if(month == 12) {
     }
 }
 
-
-
-export const totalUsersController = async (req,res) => {
+export const totalUsersController = async(req,res)=>{
     try {
-
+        const currentYear = req.query.year ? parseInt(req.query.year) : new Date().getFullYear();
         const users = await UserModel.aggregate([
             {
-                $group: {
-                    _id: { 
-                    year: {$year: "$createdAt"},
-                     month: {$month: "$createdAt"} 
-                    },
-                     count: {$sum: 1},
-                },
+                $match: {
+                    createdAt: {
+                        $gte: new Date(currentYear, 0, 1),
+                        $lt: new Date(currentYear + 1, 0, 1)
+                    }
+                }
             },
             {
-                $sort: {"_id.year": 1, "_id.month": 1},
+                $group:{
+                    _id: {month: {$month: "$createdAt"}},
+                    count: {$sum: 1},
+                }
             },
-        ]);
+            {
+                $sort: {"_id.month" : 1},
+            },
+        ])
 
         let monthlyUsers = [
             {
                 name: 'JAN',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'FEB',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'MAR',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'APR',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'MAY',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'JUN',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'JUL',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'AUG',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'SEP',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'OCT',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'NOV',
-                TotalUsers: 0    
-            },
-            {
+                TotalUsers: 0
+            },{
                 name: 'DEC',
-                TotalUsers: 0    
-            },
+                TotalUsers: 0
+            }
         ]
 
-
-        for(let i = 0; i< users.length; i++) {
-              
-            if(users[i]?._id?.month === 1) {
-                monthlyUsers[0] = {
-                    name: 'JAN',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 2) {
-                monthlyUsers[0] = {
-                    name: 'FEB',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 3) {
-                monthlyUsers[0] = {
-                    name: 'MAR',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 4) {
-                monthlyUsers[0] = {
-                    name: 'APR',
-                    TotalUsers: users[i].count
-                }
-            }
-
-            if(users[i]?._id?.month === 5) {
-                monthlyUsers[0] = {
-                    name: 'MAY',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 6) {
-                monthlyUsers[0] = {
-                    name: 'JUN',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 7) {
-                monthlyUsers[0] = {
-                    name: 'JUL',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 8) {
-                monthlyUsers[0] = {
-                    name: 'AUG',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 9) {
-                monthlyUsers[0] = {
-                    name: 'SEP',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 10) {
-                monthlyUsers[0] = {
-                    name: 'OCT',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 11) {
-                monthlyUsers[0] = {
-                    name: 'NOV',
-                    TotalUsers: users[i].count
-                }
-            }
-            if(users[i]?._id?.month === 12) {
-                monthlyUsers[0] = {
-                    name: 'DEC',
-                    TotalUsers: users[i].count
-                }
-            }
+        for (let i=0; i< users.length; i++){
+            const month = users[i]._id.month;
+            monthlyUsers[month - 1].TotalUsers = users[i].count;
         }
 
         return res.status(200).json({
-            error: false,
-            success: true,
-            monthlyUsers: monthlyUsers
-         });    
-
+           TotalUsers: monthlyUsers,
+           error: false,
+           success: true
+        })
 
     } catch (error) {
         return res.status(500).json({
-            message: error.message || error,
-            error : true,
-            success: false
+            error: true,
+            success: false,
+            message: error.message
         })
     }
 }
