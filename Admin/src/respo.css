@@ -1,0 +1,42 @@
+@media only screen and (min-width:320px) and (max-width:982px){
+ html,body{overflow-x: hidden;}
+
+
+.dashboardFilters{
+    display: block !important;
+    white-space: nowrap ;
+    overflow-x: scroll ;
+}
+.dashboardFilters ::-webkit-scrollbar{display: none;}
+
+ .dashboardFilters .col{
+display:inline-block  ;
+vertical-align: top ;
+width: 250px ;
+padding: 15px;
+ }
+
+.dashboardFilters  .search_box{
+position: relative;
+top: 15px;
+}
+
+.sidebarOverlay{pointer-events: inherit;}
+
+.btn-sm{padding: 3px 10px !important; font-size: 11px !important;}
+.btn-lg{padding: 5px 10px !important; font-size: 14px !important;}
+.btn{padding: 5px 10px !important; font-size: 12px !important;}
+.btn svg{font-size: 15px !important;}
+
+.MuiPagination-root{width: 80% !important; margin: auto !important;}
+.MuiPagination-ul{white-space: nowrap !important; overflow-x: scroll !important; display: block !important; width:100% !important;}
+.MuiPagination-ul li{display: inline-block !important; vertical-align: top !important;}
+
+
+.contentRight{ padding-left: 10px !important;}
+
+}
+
+@media only screen and (min-width:320px) and (max-width:982px){
+    .MuiTableCell-head{white-space: nowrap;}
+}

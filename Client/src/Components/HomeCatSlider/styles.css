@@ -1,0 +1,26 @@
+.HomeCatSlider {
+  width: 100%;
+  padding: 10px 0 ;
+  border-radius: 50%;
+}
+
+.HomeCatSlider .container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.mySwiper {
+  width: 100%;
+  height: 100%;
+}
+
+.mySwiper .swiper-slide {
+  margin-right: 0 !important;
+  
+}
+.HomeCatSlider .swiper-slide {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.HomeCatSlider .swiper-slide-active {
+  transform: scale(1.05);
+}

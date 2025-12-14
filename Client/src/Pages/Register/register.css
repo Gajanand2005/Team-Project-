@@ -1,0 +1,88 @@
+/* ===== Register Page Responsive CSS ===== */
+
+.register-section {
+  padding: 40px 0;
+}
+
+/* Card */
+.register-card {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  background: #fff;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.register-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Form Input Group */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Password Eye Icon Button */
+.password-toggle-btn {
+  position: absolute !important;
+  top: 6px;
+  right: 6px;
+  width: 35px !important;
+  height: 35px !important;
+  min-width: 35px !important;
+  border-radius: 50% !important;
+}
+
+/* Google Button */
+.google-btn {
+  width: 100%;
+  background: #f1f1f1 !important;
+  font-size: 18px !important;
+  padding: 12px !important;
+}
+
+/* ======= RESPONSIVE BREAKPOINTS ======= */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .register-card {
+    padding: 18px;
+    max-width: 90%;
+  }
+
+  .register-title {
+    font-size: 20px;
+  }
+
+  .google-btn {
+    font-size: 16px !important;
+    padding: 10px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .register-card {
+    padding: 14px;
+    max-width: 95%;
+  }
+
+  .register-title {
+    font-size: 18px;
+  }
+
+  .google-btn {
+    font-size: 15px !important;
+    padding: 9px !important;
+  }
+
+  button {
+    font-size: 16px !important;
+  }
+}

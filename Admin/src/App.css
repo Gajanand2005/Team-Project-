@@ -1,0 +1,146 @@
+body{
+     font-family: "Roboto", sans-serif;
+     background: #f1f1f1;
+}
+
+.MuiBadge-badge{
+    background-color: #fc3617ea !important;
+}
+
+.ReactCollapse--collapse {
+  transition: height 400ms;
+}
+
+.btn{
+  padding: 8px 20px !important;
+}
+.btn svg{
+  font-size: 20px;
+}
+.btn-blue{
+  background: #3872fa !important;
+  color: #fff !important;
+  padding: 8px 20px !important;
+}
+.btn-sm{
+  padding: 6px 20px !important;
+  font-size: 13px !important;
+}
+
+.btn-blue:hover{
+  background: rgb(22, 74, 195) !important;
+}
+
+.MuiAppBar-colorPrimary{
+  background-color:  #e6e6e6 !important;
+  color: black !important;
+}
+
+.otpBox input{
+    border: 1px solid rgba(0, 0, 0,0.3) !important;
+    outline: none !important;
+}
+.otpBox input:focus{
+    border: 1px solid rgba(0, 0, 0,0.7) !important;
+}
+.otpPage .container{
+    height: 90vh;
+    display: flex;
+}
+
+input[type=text]:disabled,input[type=email]:disabled{
+  pointer-events: none;
+  background: #f1f1f1 !important;
+}
+
+.react-international-phone-input{
+ width: 100% !important;
+}
+
+.react-international-phone-country-selector-button__button-content{
+    width: 55px !important;
+}
+.react-international-phone-input-container{
+   border: 1px solid rgba(0, 0, 0,0.1) !important;
+}
+
+ .Mui-focused fieldset legend{display: none !important;}
+
+
+.zoomProductSliderThumbs .swiper-slide{
+    height: auto !important;
+}
+.zoomProductSliderThumbs{
+    height: 50vh !important;
+    overflow: hidden !important;
+}
+
+
+    .swiper-button-prev, .swiper-button-next {
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+    }
+
+    .swiper-button-prev::after, .swiper-button-next::after {
+        font-size: 16px !important;
+    }
+
+    .homeCatSlider .swiper-button-prev, .homeCatSlider .swiper-button-next {
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+    }
+
+    .homeCatSlider .swiper-button-prev::after, .homeCatSlider .swiper-button-next::after {
+        font-size: 12px !important;
+    }
+    .sliderHome {
+    overflow: inherit !important;
+     
+}
+.swiper-button-prev, .swiper-button-next{
+display:flex ;  justify-content: center; align-items: center; background-color: white; width: 45px; height: 45px; min-width: 45px;}
+.swiper-button-prev::after, .swiper-button-next::after{
+    font-size: 20px !important ; color: black;
+
+}
+.homeCatSlider{
+    overflow: inherit !important;
+}
+.homeCatSlider .swiper-button-prev, .homeCatSlider .swiper-button-next{
+    width: 35px; height: 35px; min-width: 35px;}
+    .homeCatSlider .swiper-button-prev::after, .homeCatSlider .swiper-button-next::after{
+        font-size: 15px !important ;
+    
+    }
+    .homeCatSlider .swiper-button-prev{
+        left: 0px !important;
+    }
+    .homeCatSlider .swiper-button-next{
+        right: 0px !important;
+    }
+    .homeCatSlider.item{
+        border-radius: 1px;
+        border: 1px solid rgba(0, 0, 0,0.1);
+    }
+    .homeCatSlider.swiper-button-prev:hover,.homeCatSlider.homeCatSlider.swiper-button-prev:hover{
+        background-color: rgba(0, 0, 0,0.1) !important;
+    }
+    .homeCatSlider .swiper-button-prev:hover::after, .homeCatSlider .swiper-button-next::after{
+        color: rgba(0, 0, 0,0.7) !important;
+    
+    }
+    .homeCatSlider.item:hover img{transform:scale(1.1);}
+
+    .swiper-button-prev, .swiper-button-next{
+display:flex ;  justify-content: center; align-items: center; background-color: white; width: 45px; height: 45px; min-width: 45px;}
+.swiper-button-prev::after, .swiper-button-next::after{
+    font-size: 20px !important ; color: black;
+
+} 
+
+
+.contentRight{ padding-left: 30px !important;}
+
+.uploadBox h4{text-align: center;}

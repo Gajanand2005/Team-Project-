@@ -1,0 +1,90 @@
+/* ====== Login Page Responsive CSS ====== */
+
+/* Main Section */
+.login-section {
+  padding: 40px 0;
+}
+
+/* Card */
+.login-card {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.login-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Input spacing */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Eye icon button */
+.password-toggle-btn {
+  position: absolute !important;
+  top: 6px;
+  right: 6px;
+  width: 35px !important;
+  height: 35px !important;
+  min-width: 35px !important;
+  border-radius: 50% !important;
+}
+
+/* Google Button */
+.google-btn {
+  width: 100%;
+  background: #f1f1f1 !important;
+  padding: 12px !important;
+  font-size: 18px !important;
+  margin-top: 10px;
+}
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 15px;
+    max-width: 90%;
+  }
+
+  .login-title {
+    font-size: 20px;
+  }
+
+  .google-btn {
+    font-size: 16px !important;
+    padding: 10px !important;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 10px;
+    max-width: 95%;
+  }
+
+  .login-title {
+    font-size: 18px;
+  }
+
+  .google-btn {
+    font-size: 15px !important;
+    padding: 9px !important;
+  }
+
+  button {
+    font-size: 16px !important;
+  }
+}

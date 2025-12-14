@@ -1,0 +1,14 @@
+.searchbox input::placeholder{
+    color: black !important;
+}
+
+@media (max-width: 640px) {
+    .searchbox {
+        height: 40px;
+        padding: 4px;
+    }
+    .searchbox input {
+        font-size: 14px;
+        padding: 8px;
+    }
+}

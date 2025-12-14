@@ -1,0 +1,68 @@
+footer {
+  width: 100%;
+}
+
+.cartPanel {
+  width: 360px !important;
+  max-width: 100%;
+}
+
+.addressPanel {
+  width: 400px !important;
+  max-width: 100%;
+}
+
+/* MODAL RESPONSIVE */
+.productDetailsModalContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .productDetailsModalContainer {
+    flex-direction: row;
+  }
+
+  .productDetailsModalContainer .col1 {
+    width: 40%;
+  }
+
+  .productDetailsModalContainer .col2 {
+    width: 60%;
+  }
+}
+
+/* Size Table */
+.size-chart-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.size-chart-table th,
+.size-chart-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.size-chart-table th {
+  background: #fde6ef;
+  color: #b74c7f;
+}
+
+@media (max-width: 480px) {
+  .size-chart-table th,
+  .size-chart-table td {
+    padding: 6px;
+    font-size: 12px;
+  }
+}
+/* HIDE SCROLLBAR ON MOBILE SLIDER */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE और Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
