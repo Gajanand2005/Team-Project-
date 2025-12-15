@@ -260,6 +260,31 @@ export const totalSalesController = async (req,res)=>{
     }
 }
 
+export const getMyOrdersController = async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        const orders = await OrderModel.find({ userId: new mongoose.Types.ObjectId(userId) })
+            .sort({ createdAt: -1 })
+            .populate('delivery_address userId products.productId')
+            .exec();
+
+        return res.json({
+            message: "My orders fetched successfully",
+            data: orders,
+            error: false,
+            success: true,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        });
+    }
+};
+
 export const totalUsersController = async(req,res)=>{
     try {
         const userId = req.userId;

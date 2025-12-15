@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import AccountSidebar from '../../Components/AccountSidebar/index.jsx';
 import Button from '@mui/material/Button';
 import { FaAngleDown } from "react-icons/fa6";
@@ -6,12 +6,14 @@ import Badge from '../../Components/Badge/index.jsx';
 import { FaAngleUp } from "react-icons/fa6";
 import { fetchDataFromApi } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
+import { MyContext } from '../../App';
 import './style.css'
 const Order = () => {
-  const history = useNavigate();
+   const history = useNavigate();
+   const context = useContext(MyContext);
 
-  const [isOpenOrderProduct, setIsOpenOrderProduct]= useState(null);
-  const [orders, setOrders] = useState([]);
+   const [isOpenOrderProduct, setIsOpenOrderProduct]= useState(null);
+   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -30,12 +32,12 @@ const isShowOrderdProduct =(index)=>{
 }
 
 useEffect(() => {
-  fetchDataFromApi('/api/order/order-list').then((res)=>{
-    if(res?.error===false){
-    setOrders(res?.data);
-    }
-  })
-},[])
+   fetchDataFromApi('/api/order/my-orders').then((res)=>{
+     if(!res?.error){
+     setOrders(res?.data || res);
+     }
+   })
+ },[])
 
   return (
     <>
@@ -176,7 +178,7 @@ useEffect(() => {
 
                     <tr>
                       <td className='bg-[#f1f1f1]' colSpan={6}>
-                        
+
                       </td>
                     </tr>
                     
