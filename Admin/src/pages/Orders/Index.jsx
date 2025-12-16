@@ -24,6 +24,16 @@ const Orders = () => {
  
    }
  }
+ 
+ // Helper to get size from order item or fallback to product sizes
+ const getDisplaySize = (item) => {
+   if(!item) return 'N/A';
+   if(item?.size) return item.size;
+   const pidSize = item?.productId?.size;
+   if(Array.isArray(pidSize) && pidSize.length>0) return pidSize[0];
+   if(typeof pidSize === 'string' && pidSize) return pidSize;
+   return 'N/A';
+ }
 
 
 
@@ -135,6 +145,7 @@ const Orders = () => {
                                                 <th scope="col" className="px-6 py-3 whitespace-nowrap">Product Title</th>
                                                 <th scope="col" className="px-6 py-3 whitespace-nowrap">Image</th>
                                                 <th scope="col" className="px-6 py-3 whitespace-nowrap">Qty</th>
+                                                <th scope="col" className="px-6 py-3 whitespace-nowrap">Size</th>
                                                 <th scope="col" className="px-6 py-3 whitespace-nowrap">Price</th>
                                                 <th scope="col" className="px-6 py-3 whitespace-nowrap">Sub total</th>
                                                 <th scope="col" className="px-6 py-3 whitespace-nowrap">Print Invoice</th>
@@ -147,6 +158,7 @@ const Orders = () => {
                                                   <td className="px-6 py-4 whitespace-nowrap">{item?.productId?.name || item?.name}</td>
                                                   <td className="px-6 py-4"><img src={item?.productId?.images?.[0] || item?.image?.[0] || item?.image} alt="" className="w-[40px] h-[40px] object-cover rounded-md" /></td>
                                                   <td className="px-6 py-4">{item?.quantity}</td>
+                                                  <td className="px-6 py-4">{getDisplaySize(item)}</td>
                                                   <td className="px-6 py-4">₹{item?.price}</td>
                                                   <td className="px-6 py-4">₹{item?.price * item?.quantity}</td>
                                                   <td className="px-6 py-4"><PrintVoice order={order} /></td>
@@ -209,7 +221,7 @@ const Orders = () => {
                                     <img src={item?.productId?.images?.[0] || item?.image?.[0] || item?.image} alt="" className="w-12 h-12 object-cover rounded" />
                                     <div className="flex-1 text-sm">
                                       <div className="font-medium">{item?.productId?.name || item?.name}</div>
-                                      <div className="text-xs text-gray-600">Qty: {item?.quantity} • ₹{item?.price}</div>
+                                      <div className="text-xs text-gray-600">Qty: {item?.quantity} • Size: {getDisplaySize(item)} • ₹{item?.price}</div>
                                     </div>
                                     <div className="text-sm">₹{item?.price * item?.quantity}</div>
                                   </div>
