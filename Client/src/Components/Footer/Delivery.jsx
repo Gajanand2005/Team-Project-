@@ -54,7 +54,7 @@ const Delivery = () => {
 
           <section>
             <h2 className="text-xl font-semibold text-pink-600">5. Lost or Damaged Packages</h2>
-            <p className="mt-2">If your package is lost or arrives damaged, contact our support team within 7 days of delivery so we can help investigate and make it right.</p>
+            <p className="mt-2">Please complete this within 24 hours. The video should be a continuous 360-degree recording with no cuts, from start to end, and must clearly show the damage in the same video.</p>
           </section>
         </div>
 

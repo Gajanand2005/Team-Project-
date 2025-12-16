@@ -58,21 +58,21 @@ const Verify = () => {
 
   return (
     <>
-         <section className="section py-10 pl-90">
-        <div className="container ">
-          <div className="card shadow-md w-[500px] m-auto rounded-md bg-white p-5 px-10 ">
+         <section className="section py-10 px-4 sm:px-6 lg:px-20">
+        <div className="container mx-auto">
+          <div className="card shadow-md w-full max-w-md sm:max-w-md md:max-w-lg m-auto rounded-md bg-white p-6 sm:px-10">
             <div className='text-center flex items-center justify-center '>
-                <img src={thief} alt="" className='w-[80px]' />
+                <img src={thief} alt="" className='w-16 sm:w-20 md:w-24' />
             </div>
-            <h3 className="text-center text-[20px] text-black font-[500] !mt-4">
+            <h3 className="text-center text-lg sm:text-xl md:text-2xl text-black font-[500] !mt-4">
           Verify OTP
             </h3>
-            <p className='text-center !mt-0 !mb-4'>OTP send to <span className='text-orange-600 font-bold'>{localStorage.getItem("userEmail")}</span></p>
+            <p className='text-center !mt-0 !mb-4 text-sm sm:text-base'>OTP sent to <span className='text-orange-600 font-bold'>{localStorage.getItem("userEmail")}</span></p>
             <OtpBox length={6} onChange={handleOtpChange}/>
 
             <form action="" onSubmit={verifyOTP}>
-                <div className='flex items-center justify-center !mt-3 px-3'>
-                <Button type="submit" className='w-full !bg-orange-600 !text-white hover:!bg-black'>Verify OTP</Button>
+                <div className='flex items-center justify-center !mt-3 px-3 w-full'>
+                <Button type="submit" fullWidth variant="contained" sx={{backgroundColor:'#ff7a00', color:'#fff', '&:hover':{backgroundColor:'#000'}}}>Verify OTP</Button>
 
             </div>
 

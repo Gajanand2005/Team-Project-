@@ -115,7 +115,7 @@ const [isOpenCatPanel, setIsOpenCatPanel] = useState(false);
                 <img
                   src={logo}
                   alt="Logo"
-                  className="h-[50px] md:h-[70px] w-[130px] md:w-[190px] object-cover bg-transparent"
+                  className="h-[50px] md:h-[90px] w-[130px] md:w-[190px] object-cover bg-transparent"
                 />
               </Link>
             </div>

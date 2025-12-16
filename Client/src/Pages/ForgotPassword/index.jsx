@@ -77,66 +77,65 @@ const [formFields, setFormFields] = useState({
  
   return (
     <>
-      <section className="section py-10 pl-90">
-        <div className="container ">
-          <div className="card shadow-md w-[500px] m-auto rounded-md bg-white p-5 px-10 ">
-            <h3 className="text-center text-[20px] text-black font-[500]">
+      <section className="section py-10 px-4 sm:px-6 lg:px-20">
+        <div className="container mx-auto">
+          <div className="card shadow-md w-full max-w-md sm:max-w-md md:max-w-lg m-auto rounded-md bg-white p-6 sm:px-10">
+            <h3 className="text-center text-lg sm:text-xl md:text-2xl text-black font-[500]">
               Forgot Password
             </h3>
             <form action="" className="w-full !mt-5" onSubmit={handleSubmit}>
-              <div className="form-group w-full !mb-5 relative">
+              <div className="form-group w-full mb-5 relative">
                 <TextField
-                  type={isShowPassword=== false ? 'password' : 'text'}
-                  id="Password"
+                  type={isShowPassword === false ? 'password' : 'text'}
+                  id="newPassword"
                   label="New Password"
                   variant="outlined"
                   className="w-full"
                   name="newPassword"
                   onChange={onchangeInput}
-                   value={formFields.newPassword}
-                  disabled={isLoading === true ? true : false}
+                  value={formFields.newPassword}
+                  disabled={isLoading}
                 />
-                   <Button 
-                  className="!absolute !top-[5px] !right-[5px] z-50 !w-[35px] !h-[35px] !min-w-[35px] !rounded-full !text-black"
-                  onClick={() => setIsShowPassword2(!isShowPassword2)}
+                <Button
+                  className="absolute top-1 right-1 sm:top-[5px] sm:right-[5px] z-50 w-9 h-9 min-w-[36px] rounded-full text-black"
+                  onClick={() => setIsShowPassword(!isShowPassword)}
+                  type="button"
                 >
-                  {isShowPassword2 === false ? (
-                    <TbEyeglass2 className="text-[40px] opacity-75" />
+                  {isShowPassword === false ? (
+                    <TbEyeglass2 className="text-xl sm:text-2xl opacity-75" />
                   ) : (
-                    <TbEyeglassOff className="text-[40px] opacity-75" />
+                    <TbEyeglassOff className="text-xl sm:text-2xl opacity-75" />
                   )}
                 </Button>
               </div>
-              <div className="form-group w-full !mb-5 relative">
+              <div className="form-group w-full mb-5 relative">
                 <TextField
-                  id="Confirm_Password"
-                  type={isShowPassword2=== false ? 'password' : 'text'}
-                  label="Confirm_Password "
+                  id="confirmPassword"
+                  type={isShowPassword2 === false ? 'password' : 'text'}
+                  label="Confirm Password"
                   variant="outlined"
                   className="w-full"
-                     name="confirmPassword"
+                  name="confirmPassword"
                   onChange={onchangeInput}
-                   value={formFields.confirmPassword}
-                  disabled={isLoading === true ? true : false}
+                  value={formFields.confirmPassword}
+                  disabled={isLoading}
                 />
-                <Button 
-                  className="!absolute !top-[5px] !right-[5px] z-50 !w-[35px] !h-[35px] !min-w-[35px] !rounded-full !text-black"
+                <Button
+                  className="absolute top-1 right-1 sm:top-[5px] sm:right-[5px] z-50 w-9 h-9 min-w-[36px] rounded-full text-black"
                   onClick={() => setIsShowPassword2(!isShowPassword2)}
+                  type="button"
                 >
                   {isShowPassword2 === false ? (
-                    <TbEyeglass2 className="text-[40px] opacity-75" />
+                    <TbEyeglass2 className="text-xl sm:text-2xl opacity-75" />
                   ) : (
-                    <TbEyeglassOff className="text-[40px] opacity-75" />
+                    <TbEyeglassOff className="text-xl sm:text-2xl opacity-75" />
                   )}
                 </Button>
               </div>
-                     <div className="flex items-center w-full !mt-3">
-                <Button type="submit" disabled={!valideValue} className=" !text-white !bg-orange-600 hover:!bg-black w-full !text-[18px] !p-3">
-                  {
-                    isLoading === true ? <CircularProgress color="inherit" />
-                    :
-                      'Change Password'
-                  }</Button>
+                     <div className="flex items-center w-full mt-3">
+                <Button type="submit" disabled={!valideValue || isLoading} fullWidth variant="contained" sx={{backgroundColor:'#ff7a00', color:'#fff', '&:hover':{backgroundColor:'#000'}, paddingY:1.5, fontSize:{xs:'16px', sm:'18px'}}}>
+                  {isLoading ? <CircularProgress color="inherit" size={24} /> : 'Change Password'}
+                </Button>
             </div>
             </form>
           </div>
