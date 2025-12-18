@@ -1,7 +1,0 @@
-- [x] Create Server/controllers/admincontroller.js with adminLoginController
-- [x] Create Server/route/adminroute.js with /auth/login endpoint
-- [x] Update Server/index.js to mount admin routes under /api/admin
-- [x] Test the admin login endpoint
-- [x] Remove role restriction to allow existing users to login
-- [x] Remove automatic client login when admin login succeeds (as per user request)
-- [x] Fix admin login data going to client by enforcing role check and separate cookie names
