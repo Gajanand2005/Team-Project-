@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import UserModel from './../models/usermodel.js';
 import generatedAccessToken from "../utils/generatedAcessToken.js";
 import generatedRefreshToken from "../utils/generatedRefresToken.js";
+import sendEmailFun from "../config/sendEmail.js";
+import VerificationEmail from "../utils/verifyEmailTemplate.js";
 
 // admin login controller
 export async function adminLoginController(req, res) {
@@ -79,6 +81,106 @@ export async function adminLoginController(req, res) {
                     role: user.role
                 }
             }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// admin verify forgot password otp controller
+export async function adminVerifyForgotPasswordOtp(req, res) {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({
+                message: "Provide required fields: email, otp.",
+                error: true,
+                success: false
+            });
+        }
+
+        const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "Email not available",
+                error: true,
+                success: false
+            });
+        }
+
+        if (otp !== user.otp) {
+            return res.status(400).json({
+                message: "Invalid OTP",
+                error: true,
+                success: false
+            });
+        }
+
+        const currentTime = new Date();
+        if (user.otpExpires < currentTime) {
+            return res.status(400).json({
+                message: "OTP is expired",
+                error: true,
+                success: false
+            });
+        }
+
+        // Reset OTP fields after successful verification
+        user.otp = "";
+        user.otpExpires = "";
+        user.forgotPasswordVerified = true;
+
+        await user.save();
+
+        return res.status(200).json({
+            message: "Verify OTP successfully",
+            error: false,
+            success: true
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        });
+    }
+}
+
+// admin forgot password controller
+export async function adminForgotPasswordController(req, res) {
+    try {
+        const { email } = req.body
+        const user = await UserModel.findOne({ email: new RegExp('^' + email.toLowerCase() + '$', 'i') })
+        if (!user) {
+            return res.status(400).json({
+                message: "Email not available",
+                error: true,
+                success: false
+            })
+        }
+        let verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+        user.otp = verifyCode;
+        user.otpExpires = Date.now() + 600000;
+        await user.save();
+
+        await sendEmailFun({
+            sendTo: email,
+            subject: "Verify OTP from SmalCouture ",
+            text: "",
+            html: VerificationEmail(user.name, verifyCode)
+        })
+
+        return res.json({
+            message: "Otp sent to your email",
+            error: false,
+            success: true
         })
     } catch (error) {
         return res.status(500).json({

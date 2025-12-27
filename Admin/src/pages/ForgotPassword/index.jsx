@@ -5,9 +5,45 @@ import { FaRegUser } from "react-icons/fa";
 import loginbg from "../../assets/Login.jpg"
 import logo from '../../assets/logo.png'
 import Button from "@mui/material/Button";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { postData } from '../../Utils/Api.js';
 
 const ForgotPassword = () => {
 
+    const [email, setEmail] = useState('');
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        try {
+
+            const res = await postData('/api/admin/auth/forgot-password', { email });
+
+            if (res.success) {
+
+                localStorage.setItem("userEmail", email);
+
+                localStorage.setItem("actionType", "admin-forgot-password");
+
+                navigate("/verify-account");
+
+            } else {
+
+                alert(res.message);
+
+            }
+
+        } catch (error) {
+
+            alert(error?.response?.data?.message || 'Something went wrong');
+
+        }
+
+    };
 
   return (
     <section className="w-full h-[auto] ">
@@ -49,13 +85,15 @@ const ForgotPassword = () => {
 
 
           <br />
-          <form className="w-full px-mt-3 ">
+          <form className="w-full px-mt-3 " onSubmit={handleSubmit}>
             <div className="flex flex-col mb-4">
               <h4 className="text-[14px] font-[600] mb-1">Email</h4>
               <input
-                type="text"
+                type="email"
                 placeholder="Enter your email"
                 className="w-full h-[45px] border-2 border-[rgba(0,0,0,0.1)] rounded-md  focus:border-[rgba(0,0,0,0.7)] focus:outline-none px-3 mt-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 

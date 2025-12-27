@@ -173,6 +173,8 @@ const VerifyAccount = () => {
     const url =
       actionType === "forgot-password"
         ? "/api/user/verify-forgot-password-otp"
+        : actionType === "admin-forgot-password"
+        ? "/api/admin/auth/verify-forgot-password-otp"
         : "/api/user/verifyEmail";
 
     postData(url, { email: localStorage.getItem("userEmail"), otp })
@@ -182,7 +184,7 @@ const VerifyAccount = () => {
         if (res?.error === false) {
           context.alertBox("success", res?.message);
 
-          if (actionType === "forgot-password") {
+          if (actionType === "forgot-password" || actionType === "admin-forgot-password") {
             history("/change-password");
           } else {
             localStorage.removeItem("userEmail");
