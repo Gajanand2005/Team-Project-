@@ -7,7 +7,7 @@ import logo from '../../assets/logo.png'
 import Button from "@mui/material/Button";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { postData } from '../../Utils/Api.js';
+import { postData } from '../../../Utils/Api.js';
 
 const ForgotPassword = () => {
 
