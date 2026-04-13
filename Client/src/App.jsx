@@ -26,8 +26,7 @@ import Success from "./Pages/Orders/success.jsx";
 import Failed from "./Pages/Orders/failed.jsx";
 import Delivery from "./Components/Footer/Delivery.jsx";
 import Aboutus from "./Components/Footer/Aboutus.jsx";
-import "./respo.css"
-
+import "./respo.css";
 
 const MyContext = createContext();
 const App = () => {
@@ -38,7 +37,7 @@ const App = () => {
   const [maxWidth, setMaxWidth] = useState("lg");
   const [fullWidth, setFullWidth] = useState(true);
   const [openCartPanel, setOpenCartPanel] = useState(false);
-   const [openAddressPanel, setOpenAddressPanel] = useState(false);
+  const [openAddressPanel, setOpenAddressPanel] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [catData, setCatData] = useState([]);
@@ -48,15 +47,15 @@ const App = () => {
     model: "",
     id: "",
   });
-    const [addressMode, setAddressMode] = useState("add");
+  const [addressMode, setAddressMode] = useState("add");
   const [cartData, setCartData] = useState([]);
   const [myListData, setMyListData] = useState([]);
   const [addressData, setAddressData] = useState([]);
-  const [addressId, setAddressId]= useState("");
-  const [searchData, setSearchData]= useState([]);
-const [currency, setCurrency] = useState("INR");
-const [currencyRate, setCurrencyRate] = useState(1);
-  const [windowWidth, setWindowWidth]= useState(window.innerWidth);
+  const [addressId, setAddressId] = useState("");
+  const [searchData, setSearchData] = useState([]);
+  const [currency, setCurrency] = useState("INR");
+  const [currencyRate, setCurrencyRate] = useState(1);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleOpenProductDetailsModal = (status, item) => {
@@ -76,48 +75,50 @@ const [currencyRate, setCurrencyRate] = useState(1);
     setOpenCartPanel(newOpen);
   };
 
-   const toggleAddressPanel = (newOpen) => {
-    if(newOpen === false){
+  const toggleAddressPanel = (newOpen) => {
+    if (newOpen === false) {
       setAddressMode("add");
     }
-    setOpenAddressPanel (newOpen);
+    setOpenAddressPanel(newOpen);
   };
 
+  useEffect(() => {
+    setCurrencyRate(currencyRates[currency]);
+  }, [currency]);
 
+  const currencyRates = {
+    INR: 1,
+    USD: 0.012,
+    EUR: 0.011,
+    GBP: 0.0095, // British Pound
+    AUD: 0.018, // Australian Dollar
+    CAD: 0.017, // Canadian Dollar
+    AED: 0.044, // UAE Dirham
+  };
 
-useEffect(() => {
-  setCurrencyRate(currencyRates[currency]);
-}, [currency]);
+  // global converter
+  const formatPrice = (amount) => {
+    const converted = (amount * currencyRate).toFixed(2);
 
-
-const currencyRates = {
-  INR: 1,
-  USD: 0.012,
-  EUR: 0.011,
-  GBP: 0.0095,   // British Pound
-  AUD: 0.018,    // Australian Dollar
-  CAD: 0.017,    // Canadian Dollar
-  AED: 0.044,    // UAE Dirham
-};
-
-// global converter
-const formatPrice = (amount) => {
-  const converted = (amount * currencyRate).toFixed(2);
-
-  switch (currency) {
-    case "INR": return "₹" + converted;
-    case "USD": return "$" + converted;
-    case "EUR": return "€" + converted;
-    case "GBP": return "£" + converted;
-    case "AUD": return "A$" + converted;
-    case "CAD": return "C$" + converted;
-    case "AED": return "د.إ" + converted;
-    default: return converted;
-  }
-};
-
-
-
+    switch (currency) {
+      case "INR":
+        return "₹" + converted;
+      case "USD":
+        return "$" + converted;
+      case "EUR":
+        return "€" + converted;
+      case "GBP":
+        return "£" + converted;
+      case "AUD":
+        return "A$" + converted;
+      case "CAD":
+        return "C$" + converted;
+      case "AED":
+        return "د.إ" + converted;
+      default:
+        return converted;
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -159,15 +160,15 @@ const formatPrice = (amount) => {
         setCatData(res?.data);
       }
     });
-     const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-window.addEventListener("resize",handleResize)
+    window.addEventListener("resize", handleResize);
 
-return ()=>{
-  window.removeEventListener("resize",handleResize);
-};
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const alertBox = (status, msg) => {
@@ -197,7 +198,9 @@ return ()=>{
       subTotal: Number(product?.price) * quantity,
       userId: userId,
       brand: product?.brand,
-      size: Array.isArray(product?.size) ? product?.size?.[0] : product?.size || '',
+      size: Array.isArray(product?.size)
+        ? product?.size?.[0]
+        : product?.size || "",
     };
 
     postData("/api/cart/add", data).then((res) => {
@@ -235,16 +238,13 @@ return ()=>{
     });
   };
 
-
-  const getMyListData =() => {
-
-fetchDataFromApi(`api/myList/`).then((res)=>{
-  if(res?.error === false){
-    setMyListData(res?.data);
-  }
-})
-
-  }
+  const getMyListData = () => {
+    fetchDataFromApi(`api/myList/`).then((res) => {
+      if (res?.error === false) {
+        setMyListData(res?.data);
+      }
+    });
+  };
 
   const getAddressData = () => {
     fetchDataFromApi(`/api/address/get?userId=${userData?._id}`).then((res) => {
@@ -253,8 +253,6 @@ fetchDataFromApi(`api/myList/`).then((res)=>{
       }
     });
   };
-  
-
 
   const value = {
     setOpenProductDetailsModel,
@@ -296,14 +294,14 @@ fetchDataFromApi(`api/myList/`).then((res)=>{
     setAddressId,
     addressId,
     openSizeChart,
-setOpenSizeChart,
-  currency,
-  setCurrency,
-  currencyRate,
-  formatPrice,
-  searchData,
-  setSearchData,
-   windowWidth, 
+    setOpenSizeChart,
+    currency,
+    setCurrency,
+    currencyRate,
+    formatPrice,
+    searchData,
+    setSearchData,
+    windowWidth,
     setWindowWidth,
     sidebarOpen,
     setSidebarOpen,
@@ -316,32 +314,20 @@ setOpenSizeChart,
           <Header />
           <Routes>
             <Route path={"/"} element={<Home />} />
-            <Route
-              path={"/productListing"}
-              element={<ProductListing />}
-            />
-            <Route
-              path={"/product/:id"}
-              element={<ProductDetails />}
-            />
+            <Route path={"/productListing"} element={<ProductListing />} />
+            <Route path={"/product/:id"} element={<ProductDetails />} />
             <Route path={"/login"} element={<Login />} />
             <Route path={"/register"} element={<Register />} />
             <Route path={"/cart"} element={<CartPage />} />
             <Route path={"/Verify"} element={<Verify />} />
-            <Route
-              path={"/forgot-Password"}
-              element={<ForgotPassword />}
-            />
+            <Route path={"/forgot-Password"} element={<ForgotPassword />} />
             <Route path={"/checkout"} element={<CheckOut />} />
             <Route path={"/my-account"} element={<MyAccount />} />
             <Route path={"/my-list"} element={<MyList />} />
             <Route path={"/my-order"} element={<Order />} />
-            <Route path={"/order/success"} element={<Success/>} />
-            <Route path={"/order/failed"} element={<Failed/>} />
-            <Route
-              path={"/help-center"}
-              element={<HelpCenter />}
-            />
+            <Route path={"/order/success"} element={<Success />} />
+            <Route path={"/order/failed"} element={<Failed />} />
+            <Route path={"/help-center"} element={<HelpCenter />} />
             <Route path={"/address"} element={<Address />} />
             <Route path={"/search"} element={<SearchPage />} />
             <Route path={"/size"} element={<Size />} />
@@ -349,11 +335,8 @@ setOpenSizeChart,
             <Route path={"/AboutUs"} element={<Aboutus />} />
           </Routes>
           <Whataap />
-          {
-            windowWidth < 992 && <MobileBottomNav />
-          }
+          {windowWidth < 992 && <MobileBottomNav />}
           <Footer />
-          
         </MyContext.Provider>
       </BrowserRouter>
       <Toaster />
@@ -363,5 +346,3 @@ setOpenSizeChart,
 
 export default App;
 export { MyContext };
-
-
